@@ -11,14 +11,12 @@ unsigned long previousDestination = 10000;
 int index = 0;
 String currentStop;
 
-const int destinationFlips[] = {10, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-const int timetable[] = {6, 2, 8, 5, 0, 3, 1, 4, 9, 7};
-const String stTimetable[] = {"Six", "Two", "Eight", "Five", "Zero", "Three", "One", "Four", "Nine", "Seven"};
+const String timetable[] = {"Six", "Two", "Eight", "Five", "Zero", "Three", "One", "Four", "Nine", "Seven"};
 
 struct Mapping
 {
   String location;
-  int intLocation;
+  int flips;
 };
 
 Mapping mappedTimetable[] = {
@@ -47,10 +45,10 @@ void loop() {
   goHome();
   if (millis() - previousDestination >= 0) {
     previousDestination += 10000;
-    currentStop = stTimetable[index];
+    currentStop = timetable[index];
     for (int i = 0; i < 10; i++) {
       if (mappedTimetable[i].location == currentStop){
-        for (int j = 0; j < mappedTimetable[i].intLocation; j++) {
+        for (int j = 0; j < mappedTimetable[i].flips; j++) {
           singleFlip();
         }
         index += 1;
