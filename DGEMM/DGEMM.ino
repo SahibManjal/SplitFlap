@@ -7,12 +7,32 @@ byte latchTime = 75;
 byte flipState = LOW;
 byte isHome;
 
+unsigned long previousDestination = 10000;
+int index = 0;
+String currentStop;
+
 const int destinationFlips[] = {10, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 const int timetable[] = {6, 2, 8, 5, 0, 3, 1, 4, 9, 7};
+const String stTimetable[] = {"Six", "Two", "Eight", "Five", "Zero", "Three", "One", "Four", "Nine", "Seven"};
 
-unsigned long previousDestination = 15000;
-int index = 0;
-int currentStop;
+struct Mapping
+{
+  String location;
+  int intLocation;
+};
+
+Mapping mappedTimetable[] = {
+   {"One", 1},
+   {"Two", 2},
+   {"Three", 3},
+   {"Four", 4},
+   {"Five", 5},
+   {"Six", 6},
+   {"Seven", 7},
+   {"Eight", 8},
+   {"Nine", 9},
+   {"Zero", 10},
+};
 
 void setup() {
   // put your setup code here, to run once:
@@ -26,16 +46,21 @@ void setup() {
 void loop() {
   goHome();
   if (millis() - previousDestination >= 0) {
-    previousDestination += 15000;
-    currentStop = timetable[index];
-    for (int i = 0; i < destinationFlips[currentStop]; i++) {
-      singleFlip();
+    previousDestination += 10000;
+    currentStop = stTimetable[index];
+    for (int i = 0; i < 10; i++) {
+      if (mappedTimetable[i].location == currentStop){
+        for (int j = 0; j < mappedTimetable[i].intLocation; j++) {
+          singleFlip();
+        }
+        index += 1;
+        if (index % 10 == 0) {
+          index -= 10;
+        }
+        delay(10000);
+        break;
+      }
     }
-    index += 1;
-    if (index % 10 == 0) {
-      index -= 10;
-    }
-    delay(15000);
   }
 
 }
