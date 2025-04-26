@@ -8,7 +8,7 @@ const char* password = "neatsystem293";
 
 // Current Time info
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "jp.pool.ntp.org");
+NTPClient timeClient(ntpUDP, "pool.ntp.org");
 
 // Time holders
 int hour;
@@ -26,7 +26,9 @@ int homePin2 = 33;
 
 // State and Flap data
 byte latchTime = 75;
-byte flipState = LOW;
+byte parallelTime = 50 / 2;
+byte flipStateDestination = LOW;
+byte flipStateStops = LOW;
 
 // Going home phase
 int notHomeBool1;
@@ -38,9 +40,6 @@ int currentTrain;
 
 // Displayed TimeTable Index
 int displayedTrain = 3;
-
-// byte isHomeDestination;
-// byte isHomeStops;
 
 struct Timetable
 {
@@ -234,14 +233,6 @@ Timetable timetable[] = {
     {"SSE-Haibara", 23, 57, 48, 39}
 };
 
-
-
-// String currentStop = timetable[0].location;
-// String retrieveStop = currentStop;
-// // These variables required for edge case when consecutive trains are same type and destination
-// int requiredSet = 0;
-// int currentSet = 0;
-
 int mod(int x, int n) {
   int rem = x % n;
   if (rem < 0) {
@@ -260,18 +251,16 @@ void setup() {
   pinMode(in2Pin2, OUTPUT);
   pinMode(enablePin2, OUTPUT);
   pinMode(homePin2, INPUT);
-  Serial.begin(9600);
 
   WiFi.begin(ssid, password);
   while ( WiFi.status() != WL_CONNECTED ) {
-    Serial.println("SNEE");
     delay(500);
   }
 
   timeClient.begin();
   timeClient.update();
 
-  hour = timeClient.getHours() + 9;
+  hour = mod(timeClient.getHours() + 9, 24);
   minutes = timeClient.getMinutes();
 
   notHomeBool1 = 1;
@@ -281,121 +270,91 @@ void setup() {
   for (int i = 0; i < sizeof(timetable) / sizeof(timetable[0]); i++) {
     if (timetable[i].hour * 60 + timetable[i].minutes > hour * 60 + minutes) {
       currentTrain = i;
-      Serial.println(i);
       break;
     }
   }
-
-  // retrieveStop = retrieveStation(retrieveStop, curHour, curMinute);
-  // setStation(retrieveStop);
-  // currentStop = retrieveStop;
-  // currentSet = requiredSet;
 }
 
 void loop() {
   // All Flippers go Home when we start
   if (initialHomeBool) {
-    goHome();
+    goHomeTick();
     if (!notHomeBool1 && !notHomeBool2) {
       initialHomeBool = 0;
     }
   }
+  // Move All Flippers to new Positions
   else if (displayedTrain != currentTrain) {
-    int destinationFlips = mod(timetable[currentTrain].destinationFlap - timetable[displayedTrain].destinationFlap, 60) + 1;
-    int stopFlips = mod(timetable[currentTrain].stopFlap - timetable[displayedTrain].stopFlap, 60) + 1;
+    int destinationFlips = mod(timetable[currentTrain].destinationFlap - timetable[displayedTrain].destinationFlap, 60);
+    int stopFlips = mod(timetable[currentTrain].stopFlap - timetable[displayedTrain].stopFlap, 60);
     while (destinationFlips > 0 || stopFlips > 0) {
-      if (destinationFlips > 0) {
-        Serial.println("Flip");
-        singleFlip(enablePin1, in1Pin1, in2Pin1, flipState);
-        destinationFlips -= 1;
-      }
-      delay(25);
-      if (stopFlips > 0) {
-        singleFlip(enablePin2, in1Pin2, in2Pin2, flipState);
-        stopFlips -= 1;
-      }
-      delay(25);
-      flipState = flipState == HIGH ? LOW : HIGH;
+      goNewPositionTick(&destinationFlips, &stopFlips);
     }
     displayedTrain = currentTrain;
   }
-  // if (timeClient.getSeconds() == 0) {
-  //     hour = timeClient.getHours() % 24;
-  //     minute = timeClient.getMinutes();
+  // Updates to New Timetable Position
+  else {
+    hour = mod(timeClient.getHours() + 9, 24);
+    minutes = timeClient.getMinutes();
+    if (timetable[displayedTrain].hour * 60 + timetable[displayedTrain].minutes < hour * 60 + minutes) {
+      currentTrain = mod(currentTrain + 1, sizeof(timetable) / sizeof(timetable[0]));
+    }
 
-  // retrieveStop = retrieveStation(retrieveStop, curHour, curMinute);
-
-  // if (retrieveStop != currentStop | currentSet != requiredSet) {
-  //   setStation(retrieveStop);
-  //   currentStop = retrieveStop;
-  //   currentSet = requiredSet;
+  }
 }
 
-void goHome() {
+void goNewPositionTick(int *destinationFlips, int *stopFlips) {
+  // Moves all Flipers towards the New Position
+  if (*destinationFlips > 0) {
+    singleFlip(enablePin1, in1Pin1, in2Pin1, &flipStateDestination);
+    *destinationFlips -= 1;
+  }
+  delay(parallelTime);
+  if (*stopFlips > 0) {
+    singleFlip(enablePin2, in1Pin2, in2Pin2, &flipStateStops);
+    *stopFlips -= 1;
+  }
+  delay(parallelTime);
+
+  if ((!*destinationFlips && *stopFlips) || (*destinationFlips && !*stopFlips)) {
+    delay(latchTime);
+  }
+}
+
+
+void goHomeTick() {
   // Moves all Flipers towards the Home Position
   if (notHomeBool1 || notHomeBool2) {
     notHomeBool1 = digitalRead(homePin1) == HIGH ? 1 : 0;
     notHomeBool2 = digitalRead(homePin2) == HIGH ? 1 : 0;
 
-    goHomeFlip(homePin1, enablePin1, in1Pin1, in2Pin1, flipState);
-    goHomeFlip(homePin2, enablePin2, in1Pin2, in2Pin2, flipState);
+    goHomeFlip(homePin1, enablePin1, in1Pin1, in2Pin1, &flipStateDestination);
+    goHomeFlip(homePin2, enablePin2, in1Pin2, in2Pin2, &flipStateStops);
 
     if ((!notHomeBool1 && notHomeBool2) || (notHomeBool1 && !notHomeBool2)) {
       delay(latchTime);
     }
-
-    flipState = flipState == HIGH ? LOW : HIGH;
   }
 }
 
-void goHomeFlip(int homePin, int enablePin, int inputPin1, int inputPin2, byte flipState) {
+void goHomeFlip(int homePin, int enablePin, int inputPin1, int inputPin2, byte *flipState) {
   // Move a Flipper towards Home Position
   byte notHome = digitalRead(homePin);
 
   if (notHome != LOW) {
     singleFlip(enablePin, inputPin1, inputPin2, flipState);
   }
-  delay(25);
+  delay(parallelTime);
 
 }
 
-void singleFlip(int enablePin, int inputPin1, int inputPin2, byte flipState) {
+void singleFlip(int enablePin, int inputPin1, int inputPin2, byte *flipState) {
   // Advances a Flipper by a Single Flip
   digitalWrite(enablePin, HIGH);
-  digitalWrite(inputPin1, flipState);
-  digitalWrite(inputPin2, !flipState);
+  digitalWrite(inputPin1, *flipState);
+  digitalWrite(inputPin2, !*flipState);
   delay(latchTime);
   digitalWrite(enablePin, LOW);
+
+  *flipState = *flipState == HIGH ? LOW : HIGH;
 }
-
-
-// // Set for-loop to 23 for 23 positions in flap lookup table
-// void setStation(String station) {
-//   goHome1();
-//   int flaps = 0;
-//   for (int j = 0; j < 23; j++) {
-//     if (station == mappedTimetable[j].location) {
-//       flaps = mappedTimetable[j].flips;
-//     }
-//   }
-//   for (int i = 0; i < flaps; i++) {
-//     singleFlip1();
-//   }
-//   goHome2();
-//   int patternRequired = timetable[requiredSet].pattern;
-//   for (int l = 0; l < patternRequired; l++) {
-//     singleFlip2();
-//   }
-// }
-
-// // Set for-loop to 116 for 116 positions in timetable
-// String retrieveStation(String station, int hour, int minute) {
-//   for (int i = 0; i < 116; i++) {
-//     if ((timetable[i].hour == hour & timetable[i].minute >= minute) | timetable[i].hour > hour) {
-//       requiredSet = i;
-//       return timetable[i].location;
-//     }
-//   }
-//   requiredSet = 0;
-//   return timetable[0].location;
-// }
