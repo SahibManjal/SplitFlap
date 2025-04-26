@@ -1,14 +1,9 @@
-#include <NTPClient.h>
 #include <WiFi.h>
-#include <WiFiUdp.h>
+#include "time.h"
 
 // WiFi info
 const char* ssid = "SpectrumSetup-F27F";
 const char* password = "neatsystem293";
-
-// Current Time info
-WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "pool.ntp.org");
 
 // Time holders
 int hour;
@@ -40,6 +35,9 @@ int currentTrain;
 
 // Displayed TimeTable Index
 int displayedTrain = 3;
+
+// Current Time info Holder
+struct tm currentTime;
 
 struct Timetable
 {
@@ -257,11 +255,13 @@ void setup() {
     delay(500);
   }
 
-  timeClient.begin();
-  timeClient.update();
+  configTime(0, 0, "pool.ntp.org");
+  setenv("TZ","JST-9",1);
+  tzset();
 
-  hour = mod(timeClient.getHours() + 9, 24);
-  minutes = timeClient.getMinutes();
+  getLocalTime(&currentTime);
+  hour = currentTime.tm_hour;
+  minutes = currentTime.tm_min;
 
   notHomeBool1 = 1;
   notHomeBool2 = 1;
@@ -294,8 +294,8 @@ void loop() {
   }
   // Updates to New Timetable Position
   else {
-    hour = mod(timeClient.getHours() + 9, 24);
-    minutes = timeClient.getMinutes();
+    hour = currentTime.tm_hour;
+    minutes = currentTime.tm_min;
     if (timetable[displayedTrain].hour * 60 + timetable[displayedTrain].minutes < hour * 60 + minutes) {
       currentTrain = mod(currentTrain + 1, sizeof(timetable) / sizeof(timetable[0]));
     }
