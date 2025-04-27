@@ -20,15 +20,34 @@ int in2Pin2 = 22;
 int enablePin2 = 21;
 int homePin2 = 33;
 
+int in1Pin3 = 0;
+int in2Pin3 = 0;
+int enablePin3 = 0;
+int homePin3 = 0;
+int in1Pin4 = 0;
+int in2Pin4 = 0;
+int enablePin4 = 0;
+int homePin4 = 0;
+int in1Pin5 = 0;
+int in2Pin5 = 0;
+int enablePin5 = 0;
+int homePin5 = 0;
+
 // State and Flap data
 byte latchTime = 75;
-byte parallelTime = 50 / 2;
+byte parallelTime = 50;
 byte flipStateDestination = LOW;
 byte flipStateStops = LOW;
+byte flipStateHours = HIGH;
+byte flipStateTens = HIGH;
+byte flipStateOnes = HIGH;
 
 // Going home phase
 int notHomeBool1;
 int notHomeBool2;
+int notHomeBool3;
+int notHomeBool4;
+int notHomeBool5;
 int initialHomeBool;
 
 // TimeTable Index
@@ -442,6 +461,19 @@ void setup() {
   pinMode(enablePin2, OUTPUT);
   pinMode(homePin2, INPUT);
 
+  pinMode(in1Pin3, OUTPUT);
+  pinMode(in2Pin3, OUTPUT);
+  pinMode(enablePin3, OUTPUT);
+  pinMode(homePin3, INPUT);
+  pinMode(in1Pin4, OUTPUT);
+  pinMode(in2Pin4, OUTPUT);
+  pinMode(enablePin4, OUTPUT);
+  pinMode(homePin4, INPUT);
+  pinMode(in1Pin5, OUTPUT);
+  pinMode(in2Pin5, OUTPUT);
+  pinMode(enablePin5, OUTPUT);
+  pinMode(homePin5, INPUT);
+
   WiFi.begin(ssid, password);
   while ( WiFi.status() != WL_CONNECTED ) {
     delay(500);
@@ -458,6 +490,9 @@ void setup() {
 
   notHomeBool1 = 1;
   notHomeBool2 = 1;
+  notHomeBool3 = 0;
+  notHomeBool4 = 0;
+  notHomeBool5 = 0;
   initialHomeBool = 1;
 
   // Determine what Timetable to use
@@ -494,8 +529,11 @@ void loop() {
   else if (displayedTrain != currentTrain) {
     int destinationFlips = mod(timetable[currentTrain].destinationFlap - timetable[displayedTrain].destinationFlap, 60);
     int stopFlips = mod(timetable[currentTrain].stopFlap - timetable[displayedTrain].stopFlap, 60);
-    while (destinationFlips > 0 || stopFlips > 0) {
-      goNewPositionTick(&destinationFlips, &stopFlips);
+    int hourFlips = 0;
+    int tensMinuteFlips = 0;
+    int onesMinuteFlips = 0;
+    while (destinationFlips > 0 || stopFlips > 0 || hourFlips > 0 || tensMinuteFlips > 0  || onesMinuteFlips > 0) {
+      goNewPositionTick(&destinationFlips, &stopFlips, &hourFlips, &tensMinuteFlips, &onesMinuteFlips);
     }
     displayedTrain = currentTrain;
   }
@@ -510,44 +548,75 @@ void loop() {
       currentTrain = mod(currentTrain + 1, sizeof(timetable) / sizeof(timetable[0]));
       // Starts new timetable if necessary
       if (currentTrain == 0) {
-        wday++;
+        wday = mod(wday + 1, 7);
       }
     }
 
   }
 }
 
-void goNewPositionTick(int *destinationFlips, int *stopFlips) {
+void goNewPositionTick(int *destinationFlips, int *stopFlips, int *hourFlips, int *tensMinuteFlips, int *onesMinuteFlips) {
   // Moves all Flipers towards the New Position
   if (*destinationFlips > 0) {
     singleFlip(enablePin1, in1Pin1, in2Pin1, &flipStateDestination);
     *destinationFlips -= 1;
   }
-  delay(parallelTime);
+  else {
+    delay(latchTime);
+  }
+
   if (*stopFlips > 0) {
     singleFlip(enablePin2, in1Pin2, in2Pin2, &flipStateStops);
     *stopFlips -= 1;
   }
-  delay(parallelTime);
-
-  if ((!*destinationFlips && *stopFlips) || (*destinationFlips && !*stopFlips)) {
+  else {
     delay(latchTime);
   }
+
+  if (*hourFlips > 0) {
+    singleFlip(enablePin3, in1Pin3, in2Pin3, &flipStateStops);
+    *hourFlips -= 1;
+  }
+  else {
+    delay(latchTime);
+  }
+
+  if (*tensMinuteFlips > 0) {
+    singleFlip(enablePin4, in1Pin4, in2Pin4, &flipStateStops);
+    *tensMinuteFlips -= 1;
+  }
+  else {
+    delay(latchTime);
+  }
+
+  if (*onesMinuteFlips > 0) {
+    singleFlip(enablePin5, in1Pin5, in2Pin5, &flipStateStops);
+    *onesMinuteFlips -= 1;
+  }
+  else {
+    delay(latchTime);
+  }
+
+  delay(parallelTime);
 }
 
 
 void goHomeTick() {
   // Moves all Flipers towards the Home Position
-  if (notHomeBool1 || notHomeBool2) {
+  if (notHomeBool1 || notHomeBool2 || notHomeBool3 || notHomeBool4 || notHomeBool5) {
     notHomeBool1 = digitalRead(homePin1) == HIGH ? 1 : 0;
     notHomeBool2 = digitalRead(homePin2) == HIGH ? 1 : 0;
+    notHomeBool3 = digitalRead(homePin3) == HIGH ? 1 : 0;
+    notHomeBool4 = digitalRead(homePin4) == HIGH ? 1 : 0;
+    notHomeBool5 = digitalRead(homePin5) == HIGH ? 1 : 0;
 
     goHomeFlip(homePin1, enablePin1, in1Pin1, in2Pin1, &flipStateDestination);
     goHomeFlip(homePin2, enablePin2, in1Pin2, in2Pin2, &flipStateStops);
+    goHomeFlip(homePin3, enablePin3, in1Pin3, in2Pin3, &flipStateHours);
+    goHomeFlip(homePin4, enablePin4, in1Pin4, in2Pin4, &flipStateTens);
+    goHomeFlip(homePin5, enablePin5, in1Pin5, in2Pin5, &flipStateOnes);
 
-    if ((!notHomeBool1 && notHomeBool2) || (notHomeBool1 && !notHomeBool2)) {
-      delay(latchTime);
-    }
+    delay(parallelTime);
   }
 }
 
@@ -558,8 +627,9 @@ void goHomeFlip(int homePin, int enablePin, int inputPin1, int inputPin2, byte *
   if (notHome != LOW) {
     singleFlip(enablePin, inputPin1, inputPin2, flipState);
   }
-  delay(parallelTime);
-
+  else {
+    delay(latchTime);
+  }
 }
 
 void singleFlip(int enablePin, int inputPin1, int inputPin2, byte *flipState) {
