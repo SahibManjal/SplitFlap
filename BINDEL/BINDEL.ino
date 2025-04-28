@@ -9,55 +9,37 @@ const char* password = "neatsystem293";
 int hour;
 int minutes;
 int wday;
+int timeDrop = 0;
+
+struct Flipper {
+  String type;
+  int in1;
+  int in2;
+  int enable;
+  int home;
+  byte flipState;
+  int flipAmount;
+  int flapPosition;
+};
 
 // Pin data
-int in1Pin1 = 4;
-int in2Pin1 = 15;
-int enablePin1 = 2;
-int homePin1 = 25;
-int in1Pin2 = 23;
-int in2Pin2 = 22;
-int enablePin2 = 21;
-int homePin2 = 33;
-
-int in1Pin3 = 0;
-int in2Pin3 = 0;
-int enablePin3 = 0;
-int homePin3 = 0;
-int in1Pin4 = 0;
-int in2Pin4 = 0;
-int enablePin4 = 0;
-int homePin4 = 0;
-int in1Pin5 = 0;
-int in2Pin5 = 0;
-int enablePin5 = 0;
-int homePin5 = 0;
+Flipper flippers[] = {
+  {"Destination", 4, 15, 2, 25, LOW, 0, 0},
+  {"Stops", 23, 22, 21, 33, LOW, 0, 0}
+};
 
 // State and Flap data
 byte latchTime = 75;
-byte parallelTime = 50;
-byte flipStateDestination = LOW;
-byte flipStateStops = LOW;
-byte flipStateHours = HIGH;
-byte flipStateTens = HIGH;
-byte flipStateOnes = HIGH;
+byte parallelTime = 50 / 2;
 
 // Going home phase
-int notHomeBool1;
-int notHomeBool2;
-int notHomeBool3;
-int notHomeBool4;
-int notHomeBool5;
-int initialHomeBool;
+int initialHomeBool = 1;
 
 // TimeTable Index
 int currentTrain;
 
 // Displayed TimeTable Index
-int displayedTrain = 3;
-
-// Current Time info Holder
-struct tm currentTime;
+int displayedTrain = 0;
 
 struct Timetable
 {
@@ -71,7 +53,10 @@ struct Timetable
 Timetable *timetable;
 
 Timetable weekdayTimetable[] = {
-  {"Blank", 5, 8, 0, 0},   
+  // {"Blank", 5, 8, 0, 0},
+  {"L-Haibara", 0, 3, 31, 39}, // Actual end is Yamato-Asakura
+  {"E-Toba", 0, 4, 20, 25}, // Actual end is Nakagawa
+
   {"L-Haibara", 5, 38, 31, 39}, // Actual end is Yamato-Asakura
   {"E-Toba", 5, 51, 20, 25}, // Actual end is Nakagawa
   {"L-Haibara", 6, 3, 31, 39}, // Actual end is Yamato-Asakura
@@ -436,11 +421,20 @@ Timetable weekendTimetable[] = {
   {"E-Aoyamacho", 23, 24, 24, 36},
   {"SSE-Haibara", 23, 32, 48, 39}, // Actual end is Yamato-Asakura
   {"E-Aoyamacho", 23, 48, 24, 36},
-  {"SSE-Haibara", 23, 57, 48, 39},
-  {"Terminates Here", 0, 9, 38, 16}, // Added 1 minute to clear platform
-  {"SSE-Haibara", 0, 17, 48, 39},
-  {"Terminates Here", 0, 30, 38, 16}, // Added 1 minute to clear platform
+  // {"SSE-Haibara", 23, 57, 48, 39},
+  // {"Terminates Here", 0, 9, 38, 16}, // Added 1 minute to clear platform
+  // {"SSE-Haibara", 0, 17, 48, 39},
+  {"SSE-Haibara", 23, 59, 48, 39},
+  {"Terminates Here", 0, 0, 38, 16}, // Added 1 minute to clear platform
+  {"SSE-Haibara", 0, 1, 48, 39},
+  {"Terminates Here", 0, 2, 38, 16}, // Added 1 minute to clear platform
+  // {"Terminates Here", 0, 30, 38, 16}, // Added 1 minute to clear platform
 };
+
+// Get timetable lengths
+int weekdayTimetableLength = sizeof(weekdayTimetable) / sizeof(weekdayTimetable[0]);
+int weekendTimetableLength = sizeof(weekendTimetable) / sizeof(weekendTimetable[0]);
+int timetableLength;
 
 int mod(int x, int n) {
   int rem = x % n;
@@ -451,57 +445,69 @@ int mod(int x, int n) {
 }
 
 
-void setup() {
-  pinMode(in1Pin1, OUTPUT);
-  pinMode(in2Pin1, OUTPUT);
-  pinMode(enablePin1, OUTPUT);
-  pinMode(homePin1, INPUT);
-  pinMode(in1Pin2, OUTPUT);
-  pinMode(in2Pin2, OUTPUT);
-  pinMode(enablePin2, OUTPUT);
-  pinMode(homePin2, INPUT);
+int previousTime = millis();
+void updateTime(int dayUpdate) {
+  // struct tm currentTime;
+  // getLocalTime(&currentTime);
+  // hour = currentTime.tm_hour;
+  // minutes = currentTime.tm_min;
+  // if (dayUpdate) {
+  //   wday = currentTime.tm_wday;
+  // }
+  if (dayUpdate) {
+    wday = 0;
+    hour = 23;
+    minutes = 58;
+  }
+  else {
+    if (millis() - previousTime > 60000) {
+      minutes += 1;
+      previousTime = millis();
+      if (minutes == 60) {
+        minutes = 0;
+        hour = mod(hour + 1, 24);
+      }
+    }
+  }
+  Serial.println(hour);
+  Serial.println(minutes);
+  Serial.println("----------");
+}
 
-  pinMode(in1Pin3, OUTPUT);
-  pinMode(in2Pin3, OUTPUT);
-  pinMode(enablePin3, OUTPUT);
-  pinMode(homePin3, INPUT);
-  pinMode(in1Pin4, OUTPUT);
-  pinMode(in2Pin4, OUTPUT);
-  pinMode(enablePin4, OUTPUT);
-  pinMode(homePin4, INPUT);
-  pinMode(in1Pin5, OUTPUT);
-  pinMode(in2Pin5, OUTPUT);
-  pinMode(enablePin5, OUTPUT);
-  pinMode(homePin5, INPUT);
+
+void setup() {
+  for (int i = 0; i < sizeof(flippers) / sizeof(flippers[0]); i++) {
+    pinMode(flippers[i].in1, OUTPUT);
+    pinMode(flippers[i].in2, OUTPUT);
+    pinMode(flippers[i].enable, OUTPUT);
+    pinMode(flippers[i].home, INPUT);
+  }
+  Serial.begin(9600);
 
   WiFi.begin(ssid, password);
   while ( WiFi.status() != WL_CONNECTED ) {
     delay(500);
+    Serial.println("SNEE");
   }
 
   configTime(0, 0, "pool.ntp.org");
   setenv("TZ","JST-9",1);
   tzset();
 
-  getLocalTime(&currentTime);
-  hour = currentTime.tm_hour;
-  minutes = currentTime.tm_min;
-  wday = currentTime.tm_wday;
-
-  notHomeBool1 = 1;
-  notHomeBool2 = 1;
-  notHomeBool3 = 0;
-  notHomeBool4 = 0;
-  notHomeBool5 = 0;
-  initialHomeBool = 1;
+  updateTime(1);
 
   // Determine what Timetable to use
   if (wday == 0 || wday == 6) {
     timetable = weekendTimetable;
+    timetableLength = weekendTimetableLength;
+  } 
+  else {
+      timetable = weekdayTimetable;
+      timetableLength = weekdayTimetableLength;
   }
 
   // Get what current Train
-  for (int i = 0; i < sizeof(timetable) / sizeof(timetable[0]); i++) {
+  for (int i = 0; i < timetableLength; i++) {
     if (timetable[i].hour * 60 + timetable[i].minutes > hour * 60 + minutes) {
       currentTrain = i;
       break;
@@ -510,135 +516,105 @@ void setup() {
 }
 
 void loop() {
-  getLocalTime(&currentTime);
-  hour = currentTime.tm_hour;
-  minutes = currentTime.tm_min;
+  updateTime(0);
 
   // Determine what Timetable to use
   if (wday == 0 || wday == 6) {
     timetable = weekendTimetable;
+    timetableLength = weekendTimetableLength;
+  } 
+  else {
+      timetable = weekdayTimetable;
+      timetableLength = weekdayTimetableLength;
   }
   // All Flippers go Home when we start
   if (initialHomeBool) {
-    goHomeTick();
-    if (!notHomeBool1 && !notHomeBool2) {
+    int allHome = goHomeTick();
+    if (allHome) {
       initialHomeBool = 0;
     }
   }
   // Move All Flippers to new Positions
   else if (displayedTrain != currentTrain) {
-    int destinationFlips = mod(timetable[currentTrain].destinationFlap - timetable[displayedTrain].destinationFlap, 60);
-    int stopFlips = mod(timetable[currentTrain].stopFlap - timetable[displayedTrain].stopFlap, 60);
-    int hourFlips = 0;
-    int tensMinuteFlips = 0;
-    int onesMinuteFlips = 0;
-    while (destinationFlips > 0 || stopFlips > 0 || hourFlips > 0 || tensMinuteFlips > 0  || onesMinuteFlips > 0) {
-      goNewPositionTick(&destinationFlips, &stopFlips, &hourFlips, &tensMinuteFlips, &onesMinuteFlips);
+    flippers[0].flipAmount = mod(timetable[currentTrain].destinationFlap - flippers[0].flapPosition, 60);
+    flippers[1].flipAmount = mod(timetable[currentTrain].stopFlap - flippers[1].flapPosition, 60);
+    int haveFlips = 1;
+    while (haveFlips) {
+      haveFlips = goNewPositionTick();
     }
+    flippers[0].flapPosition = timetable[currentTrain].destinationFlap;
+    flippers[1].flapPosition = timetable[currentTrain].stopFlap;
     displayedTrain = currentTrain;
   }
   // Updates to New Timetable Position
   else {
-    int timeInMinutes = hour * 60 + minutes;
-    // Handles case if Train at 23:59
-    if (timeInMinutes == 0) {
-      timeInMinutes = 24 * 60;
+    int trainStopTime = timetable[displayedTrain].hour * 60 + timetable[displayedTrain].minutes;
+    // Handles moving from hour 23 to hour 0
+    int nextTrain = mod(currentTrain + 1, timetableLength);
+    if (timetable[nextTrain].hour * 60 + timetable[nextTrain].minutes < trainStopTime) {
+        timeDrop = 1;
+      }
+    else if (trainStopTime == hour * 60 + minutes) {
+      timeDrop = 0;
     }
-    if (timetable[displayedTrain].hour * 60 + timetable[displayedTrain].minutes < timeInMinutes) {
-      currentTrain = mod(currentTrain + 1, sizeof(timetable) / sizeof(timetable[0]));
+    else if (timeDrop) {
+      trainStopTime += 24 * 60;
+    }
+
+    if (trainStopTime < hour * 60 + minutes) {
+      currentTrain = nextTrain;
       // Starts new timetable if necessary
       if (currentTrain == 0) {
         wday = mod(wday + 1, 7);
+        timeDrop = 0;
       }
     }
 
   }
 }
 
-void goNewPositionTick(int *destinationFlips, int *stopFlips, int *hourFlips, int *tensMinuteFlips, int *onesMinuteFlips) {
+int goNewPositionTick() {
   // Moves all Flipers towards the New Position
-  if (*destinationFlips > 0) {
-    singleFlip(enablePin1, in1Pin1, in2Pin1, &flipStateDestination);
-    *destinationFlips -= 1;
-  }
-  else {
-    delay(latchTime);
-  }
-
-  if (*stopFlips > 0) {
-    singleFlip(enablePin2, in1Pin2, in2Pin2, &flipStateStops);
-    *stopFlips -= 1;
-  }
-  else {
-    delay(latchTime);
-  }
-
-  if (*hourFlips > 0) {
-    singleFlip(enablePin3, in1Pin3, in2Pin3, &flipStateStops);
-    *hourFlips -= 1;
-  }
-  else {
-    delay(latchTime);
-  }
-
-  if (*tensMinuteFlips > 0) {
-    singleFlip(enablePin4, in1Pin4, in2Pin4, &flipStateStops);
-    *tensMinuteFlips -= 1;
-  }
-  else {
-    delay(latchTime);
-  }
-
-  if (*onesMinuteFlips > 0) {
-    singleFlip(enablePin5, in1Pin5, in2Pin5, &flipStateStops);
-    *onesMinuteFlips -= 1;
-  }
-  else {
-    delay(latchTime);
-  }
-
-  delay(parallelTime);
-}
-
-
-void goHomeTick() {
-  // Moves all Flipers towards the Home Position
-  if (notHomeBool1 || notHomeBool2 || notHomeBool3 || notHomeBool4 || notHomeBool5) {
-    notHomeBool1 = digitalRead(homePin1) == HIGH ? 1 : 0;
-    notHomeBool2 = digitalRead(homePin2) == HIGH ? 1 : 0;
-    notHomeBool3 = digitalRead(homePin3) == HIGH ? 1 : 0;
-    notHomeBool4 = digitalRead(homePin4) == HIGH ? 1 : 0;
-    notHomeBool5 = digitalRead(homePin5) == HIGH ? 1 : 0;
-
-    goHomeFlip(homePin1, enablePin1, in1Pin1, in2Pin1, &flipStateDestination);
-    goHomeFlip(homePin2, enablePin2, in1Pin2, in2Pin2, &flipStateStops);
-    goHomeFlip(homePin3, enablePin3, in1Pin3, in2Pin3, &flipStateHours);
-    goHomeFlip(homePin4, enablePin4, in1Pin4, in2Pin4, &flipStateTens);
-    goHomeFlip(homePin5, enablePin5, in1Pin5, in2Pin5, &flipStateOnes);
-
+  int noFlips = sizeof(flippers) / sizeof(flippers[0]);
+  for (int i = 0; i < sizeof(flippers) / sizeof(flippers[0]); i++) {
+    if (flippers[i].flipAmount) {
+      singleFlip(i);
+      flippers[i].flipAmount--;
+    }
+    else {
+      delay(latchTime);
+      noFlips--;
+    }
     delay(parallelTime);
   }
+  return noFlips;
 }
 
-void goHomeFlip(int homePin, int enablePin, int inputPin1, int inputPin2, byte *flipState) {
-  // Move a Flipper towards Home Position
-  byte notHome = digitalRead(homePin);
 
-  if (notHome != LOW) {
-    singleFlip(enablePin, inputPin1, inputPin2, flipState);
+int goHomeTick() {
+  // Moves all Flipers towards the Home Position
+  int allHome = 0;
+  for (int i = 0; i < sizeof(flippers) / sizeof(flippers[0]); i++) {
+    if (digitalRead(flippers[i].home)) {
+      singleFlip(i);
+    }
+    else {
+      delay(latchTime);
+      allHome++;
+    }
+    delay(parallelTime);
   }
-  else {
-    delay(latchTime);
-  }
+  return allHome == sizeof(flippers) / sizeof(flippers[0]);
 }
 
-void singleFlip(int enablePin, int inputPin1, int inputPin2, byte *flipState) {
+
+void singleFlip(int index) {
   // Advances a Flipper by a Single Flip
-  digitalWrite(enablePin, HIGH);
-  digitalWrite(inputPin1, *flipState);
-  digitalWrite(inputPin2, !*flipState);
+  digitalWrite(flippers[index].enable, HIGH);
+  digitalWrite(flippers[index].in1, flippers[index].flipState);
+  digitalWrite(flippers[index].in2, !flippers[index].flipState);
   delay(latchTime);
-  digitalWrite(enablePin, LOW);
+  digitalWrite(flippers[index].enable, LOW);
 
-  *flipState = *flipState == HIGH ? LOW : HIGH;
+  flippers[index].flipState = flippers[index].flipState == HIGH ? LOW : HIGH;
 }
