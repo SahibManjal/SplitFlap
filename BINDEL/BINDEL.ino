@@ -9,6 +9,8 @@ const char* password = "neatsystem293";
 int hour;
 int minutes;
 int wday;
+int month;
+int day;
 enum stateType {NORMAL, TIMEDROP, STALLTIME};
 enum stateType state;
 
@@ -25,13 +27,16 @@ struct Flipper {
 
 // Pin data
 Flipper flippers[] = {
-  {"Destination", 4, 15, 2, 25, LOW, 0, 0},
-  {"Stops", 23, 22, 21, 33, LOW, 0, 0}
+  {"Destination", 4, 15, 2, 33, LOW, 0, 0},
+  {"Stops", 23, 22, 21, 32, LOW, 0, 0},
+  {"Hours", 18, 5, 19, 39, LOW, 0, 0},
+  {"Tens", 14, 12, 13, 35, LOW, 0, 0},
+  {"Ones", 25, 26, 27, 34, LOW, 0, 0},
 };
 
 // State and Flap data
-byte latchTime = 75;
-byte parallelTime = 50 / 2;
+byte latchTime = 75 / (sizeof(flippers) / sizeof(flippers[0]));
+byte parallelTime = 50 / (sizeof(flippers) / sizeof(flippers[0]));
 
 // Going home phase
 int initialHomeBool = 1;
@@ -41,6 +46,9 @@ int currentTrain;
 
 // Displayed TimeTable Index
 int displayedTrain = 0;
+
+// Empty Times
+char* emptyTimes[] = {"Pass", "Terminates Here", "Blank", "Not In Service", ""};
 
 struct Timetable
 {
@@ -438,8 +446,15 @@ int mod(int x, int n) {
   return rem;
 }
 
+int useWeekend() {
+  return (wday == 0) || (wday == 6) || (month == 1 && day == 1) || (month == 1 && day >= 8 && day <= 14 && wday == 1) || 
+  (month == 2 && day == 11) || (month == 2 && day == 23) || (month == 3 && day == 20) || (month == 4 && day == 29) ||
+  (month == 5 && day == 3) || (month == 5 && day == 4) || (month == 5 && day == 5) || (month == 7 && day >= 15 && day <= 21 && wday == 1) ||
+  (month == 8 && day == 11) || (month == 9 && day >= 15 && day <= 21 && wday == 1) || (month == 9 && day == 23) ||
+  (month == 10 && day >= 8 && day <= 14 && wday == 1) || (month == 11 && day == 3) || (month == 11 && day == 23);
+}
 
-int previousTime = millis();
+
 void updateTime(int dayUpdate) {
   struct tm currentTime;
   getLocalTime(&currentTime);
@@ -447,6 +462,8 @@ void updateTime(int dayUpdate) {
   minutes = currentTime.tm_min;
   if (dayUpdate) {
     wday = currentTime.tm_wday;
+    month = currentTime.tm_mon + 1;
+    day = currentTime.tm_mday;
   }
 }
 
@@ -471,7 +488,7 @@ void setup() {
   updateTime(1);
 
   // Determine what Timetable to use
-  if (wday == 0 || wday == 6) {
+  if (useWeekend()) {
     timetable = weekendTimetable;
     timetableLength = weekendTimetableLength;
   } 
@@ -495,7 +512,7 @@ void loop() {
   updateTime(0);
 
   // Determine what Timetable to use
-  if (wday == 0 || wday == 6) {
+  if (useWeekend()) {
     timetable = weekendTimetable;
     timetableLength = weekendTimetableLength;
   } 
@@ -512,14 +529,31 @@ void loop() {
   }
   // Move All Flippers to new Positions
   else if (displayedTrain != currentTrain) {
+    int noTime = 0;
+    for (int i = 0; emptyTimes[i] != ""; i++) {
+      if (timetable[currentTrain].location == emptyTimes[i]) {
+        noTime = 1;
+      }
+    }
     flippers[0].flipAmount = mod(timetable[currentTrain].destinationFlap - flippers[0].flapPosition, 60);
     flippers[1].flipAmount = mod(timetable[currentTrain].stopFlap - flippers[1].flapPosition, 60);
+    if (noTime) {
+      flippers[2].flipAmount = 60 - flippers[2].flapPosition;
+      flippers[3].flipAmount = 60 - flippers[3].flapPosition;
+      flippers[4].flipAmount = 60 - flippers[4].flapPosition;
+    }
+    else {
+      flippers[2].flipAmount = mod(timetable[currentTrain].hour - flippers[2].flapPosition + 1, 60);
+      flippers[3].flipAmount = mod(timetable[currentTrain].minutes / 10 - flippers[3].flapPosition + 1, 60);
+      flippers[4].flipAmount = mod(timetable[currentTrain].minutes % 10 - flippers[4].flapPosition + 1, 60);
+    }
     int haveFlips = 1;
     while (haveFlips) {
       haveFlips = goNewPositionTick();
     }
-    flippers[0].flapPosition = timetable[currentTrain].destinationFlap;
-    flippers[1].flapPosition = timetable[currentTrain].stopFlap;
+    for (int i = 0; i < sizeof(flippers) / sizeof(flippers[0]); i++) {
+      flippers[i].flapPosition = mod(flippers[i].flapPosition + flippers[i].flipAmount, 60);
+    }
     displayedTrain = currentTrain;
   }
   // Updates to New Timetable Position
@@ -537,7 +571,7 @@ void loop() {
           currentTrain = nextTrain;
           // Starts new timetable if necessary
           if (currentTrain == 0) {
-            wday = mod(wday + 1, 7);
+            updateTime(1);
           }
         }
         break;
@@ -546,7 +580,7 @@ void loop() {
           currentTrain = nextTrain;
           // Starts new timetable if necessary
           if (currentTrain == 0) {
-            wday = mod(wday + 1, 7);
+            updateTime(1);
           }
           state = STALLTIME;
         }
