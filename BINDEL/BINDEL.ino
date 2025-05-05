@@ -9,7 +9,8 @@ const char* password = "neatsystem293";
 int hour;
 int minutes;
 int wday;
-int timeDrop = 0;
+enum stateType {NORMAL, TIMEDROP, STALLTIME};
+enum stateType state;
 
 struct Flipper {
   String type;
@@ -53,10 +54,7 @@ struct Timetable
 Timetable *timetable;
 
 Timetable weekdayTimetable[] = {
-  // {"Blank", 5, 8, 0, 0},
-  {"L-Haibara", 0, 3, 31, 39}, // Actual end is Yamato-Asakura
-  {"E-Toba", 0, 4, 20, 25}, // Actual end is Nakagawa
-
+  {"Blank", 5, 8, 0, 0},
   {"L-Haibara", 5, 38, 31, 39}, // Actual end is Yamato-Asakura
   {"E-Toba", 5, 51, 20, 25}, // Actual end is Nakagawa
   {"L-Haibara", 6, 3, 31, 39}, // Actual end is Yamato-Asakura
@@ -421,14 +419,10 @@ Timetable weekendTimetable[] = {
   {"E-Aoyamacho", 23, 24, 24, 36},
   {"SSE-Haibara", 23, 32, 48, 39}, // Actual end is Yamato-Asakura
   {"E-Aoyamacho", 23, 48, 24, 36},
-  // {"SSE-Haibara", 23, 57, 48, 39},
-  // {"Terminates Here", 0, 9, 38, 16}, // Added 1 minute to clear platform
-  // {"SSE-Haibara", 0, 17, 48, 39},
-  {"SSE-Haibara", 23, 59, 48, 39},
-  {"Terminates Here", 0, 0, 38, 16}, // Added 1 minute to clear platform
-  {"SSE-Haibara", 0, 1, 48, 39},
-  {"Terminates Here", 0, 2, 38, 16}, // Added 1 minute to clear platform
-  // {"Terminates Here", 0, 30, 38, 16}, // Added 1 minute to clear platform
+  {"SSE-Haibara", 23, 57, 48, 39},
+  {"Terminates Here", 0, 9, 38, 16}, // Added 1 minute to clear platform
+  {"SSE-Haibara", 0, 17, 48, 39},
+  {"Terminates Here", 0, 30, 38, 16}, // Added 1 minute to clear platform
 };
 
 // Get timetable lengths
@@ -447,31 +441,13 @@ int mod(int x, int n) {
 
 int previousTime = millis();
 void updateTime(int dayUpdate) {
-  // struct tm currentTime;
-  // getLocalTime(&currentTime);
-  // hour = currentTime.tm_hour;
-  // minutes = currentTime.tm_min;
-  // if (dayUpdate) {
-  //   wday = currentTime.tm_wday;
-  // }
+  struct tm currentTime;
+  getLocalTime(&currentTime);
+  hour = currentTime.tm_hour;
+  minutes = currentTime.tm_min;
   if (dayUpdate) {
-    wday = 0;
-    hour = 23;
-    minutes = 58;
+    wday = currentTime.tm_wday;
   }
-  else {
-    if (millis() - previousTime > 60000) {
-      minutes += 1;
-      previousTime = millis();
-      if (minutes == 60) {
-        minutes = 0;
-        hour = mod(hour + 1, 24);
-      }
-    }
-  }
-  Serial.println(hour);
-  Serial.println(minutes);
-  Serial.println("----------");
 }
 
 
@@ -482,12 +458,10 @@ void setup() {
     pinMode(flippers[i].enable, OUTPUT);
     pinMode(flippers[i].home, INPUT);
   }
-  Serial.begin(9600);
 
   WiFi.begin(ssid, password);
   while ( WiFi.status() != WL_CONNECTED ) {
     delay(500);
-    Serial.println("SNEE");
   }
 
   configTime(0, 0, "pool.ntp.org");
@@ -505,6 +479,8 @@ void setup() {
       timetable = weekdayTimetable;
       timetableLength = weekdayTimetableLength;
   }
+
+  state = NORMAL;
 
   // Get what current Train
   for (int i = 0; i < timetableLength; i++) {
@@ -549,27 +525,38 @@ void loop() {
   // Updates to New Timetable Position
   else {
     int trainStopTime = timetable[displayedTrain].hour * 60 + timetable[displayedTrain].minutes;
-    // Handles moving from hour 23 to hour 0
     int nextTrain = mod(currentTrain + 1, timetableLength);
-    if (timetable[nextTrain].hour * 60 + timetable[nextTrain].minutes < trainStopTime) {
-        timeDrop = 1;
-      }
-    else if (trainStopTime == hour * 60 + minutes) {
-      timeDrop = 0;
+    int nextTrainStopTime = timetable[nextTrain].hour * 60 + timetable[nextTrain].minutes;
+    // Handles moving from hour 23 to hour 0
+    switch (state) {
+      case NORMAL:
+        if (nextTrainStopTime < trainStopTime) {
+          state = TIMEDROP;
+        }
+        if (trainStopTime < hour * 60 + minutes) {
+          currentTrain = nextTrain;
+          // Starts new timetable if necessary
+          if (currentTrain == 0) {
+            wday = mod(wday + 1, 7);
+          }
+        }
+        break;
+      case TIMEDROP:
+        if ((trainStopTime < hour * 60 + minutes) || hour == 0) {
+          currentTrain = nextTrain;
+          // Starts new timetable if necessary
+          if (currentTrain == 0) {
+            wday = mod(wday + 1, 7);
+          }
+          state = STALLTIME;
+        }
+        break;
+      case STALLTIME:
+        if (trainStopTime == hour * 60 + minutes) {
+          state = NORMAL;
+        }
+        break;
     }
-    else if (timeDrop) {
-      trainStopTime += 24 * 60;
-    }
-
-    if (trainStopTime < hour * 60 + minutes) {
-      currentTrain = nextTrain;
-      // Starts new timetable if necessary
-      if (currentTrain == 0) {
-        wday = mod(wday + 1, 7);
-        timeDrop = 0;
-      }
-    }
-
   }
 }
 
