@@ -27,15 +27,15 @@ struct Flipper {
 
 // Pin data
 Flipper flippers[] = {
-  {"Destination", 4, 15, 2, 33, LOW, 0, 0},
-  {"Stops", 23, 22, 21, 32, LOW, 0, 0},
-  {"Hours", 18, 5, 19, 39, LOW, 0, 0},
-  {"Tens", 14, 12, 13, 35, LOW, 0, 0},
-  {"Ones", 25, 26, 27, 34, LOW, 0, 0},
+  {"Destination", 4, 15, 2, 25, LOW, 0, 0},
+  {"Stops", 23, 22, 21, 33, LOW, 0, 0},
+  // {"Hours", 18, 5, 19, 39, LOW, 0, 0},
+  // {"Tens", 14, 12, 13, 35, LOW, 0, 0},
+  // {"Ones", 25, 26, 27, 34, LOW, 0, 0},
 };
 
 // State and Flap data
-byte latchTime = 75 / (sizeof(flippers) / sizeof(flippers[0]));
+byte latchTime = 60;
 byte parallelTime = 50 / (sizeof(flippers) / sizeof(flippers[0]));
 
 // Going home phase
@@ -537,22 +537,19 @@ void loop() {
     }
     flippers[0].flipAmount = mod(timetable[currentTrain].destinationFlap - flippers[0].flapPosition, 60);
     flippers[1].flipAmount = mod(timetable[currentTrain].stopFlap - flippers[1].flapPosition, 60);
-    if (noTime) {
-      flippers[2].flipAmount = 60 - flippers[2].flapPosition;
-      flippers[3].flipAmount = 60 - flippers[3].flapPosition;
-      flippers[4].flipAmount = 60 - flippers[4].flapPosition;
-    }
-    else {
-      flippers[2].flipAmount = mod(timetable[currentTrain].hour - flippers[2].flapPosition + 1, 60);
-      flippers[3].flipAmount = mod(timetable[currentTrain].minutes / 10 - flippers[3].flapPosition + 1, 60);
-      flippers[4].flipAmount = mod(timetable[currentTrain].minutes % 10 - flippers[4].flapPosition + 1, 60);
-    }
+    // if (noTime) {
+    //   flippers[2].flipAmount = 60 - flippers[2].flapPosition;
+    //   flippers[3].flipAmount = 60 - flippers[3].flapPosition;
+    //   flippers[4].flipAmount = 60 - flippers[4].flapPosition;
+    // }
+    // else {
+    //   flippers[2].flipAmount = mod(timetable[currentTrain].hour - flippers[2].flapPosition + 1, 60);
+    //   flippers[3].flipAmount = mod(timetable[currentTrain].minutes / 10 - flippers[3].flapPosition + 1, 60);
+    //   flippers[4].flipAmount = mod(timetable[currentTrain].minutes % 10 - flippers[4].flapPosition + 1, 60);
+    // }
     int haveFlips = 1;
     while (haveFlips) {
       haveFlips = goNewPositionTick();
-    }
-    for (int i = 0; i < sizeof(flippers) / sizeof(flippers[0]); i++) {
-      flippers[i].flapPosition = mod(flippers[i].flapPosition + flippers[i].flipAmount, 60);
     }
     displayedTrain = currentTrain;
   }
@@ -601,6 +598,7 @@ int goNewPositionTick() {
     if (flippers[i].flipAmount) {
       singleFlip(i);
       flippers[i].flipAmount--;
+      flippers[i].flapPosition = mod(flippers[i].flapPosition + 1, 60);
     }
     else {
       delay(latchTime);
