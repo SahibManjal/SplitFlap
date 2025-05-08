@@ -1,6 +1,8 @@
 #include <WiFi.h>
 #include "time.h"
 
+#define FLIPPERS_SIZE sizeof(flippers)/sizeof(flippers[0])
+
 // WiFi info
 const char* ssid = "SpectrumSetup-F27F";
 const char* password = "neatsystem293";
@@ -35,8 +37,8 @@ Flipper flippers[] = {
 };
 
 // State and Flap data
-byte latchTime = 60;
-byte parallelTime = 50 / (sizeof(flippers) / sizeof(flippers[0]));
+byte latchTime = 90;
+//byte parallelTime = 50 / FLIPPERS_SIZE;
 
 // Going home phase
 int initialHomeBool = 1;
@@ -469,7 +471,7 @@ void updateTime(int dayUpdate) {
 
 
 void setup() {
-  for (int i = 0; i < sizeof(flippers) / sizeof(flippers[0]); i++) {
+  for (int i = 0; i < FLIPPERS_SIZE; i++) {
     pinMode(flippers[i].in1, OUTPUT);
     pinMode(flippers[i].in2, OUTPUT);
     pinMode(flippers[i].enable, OUTPUT);
@@ -594,7 +596,8 @@ void loop() {
 int goNewPositionTick() {
   // Moves all Flipers towards the New Position
   int noFlips = sizeof(flippers) / sizeof(flippers[0]);
-  for (int i = 0; i < sizeof(flippers) / sizeof(flippers[0]); i++) {
+  enableAllFlippers();
+  for (int i = 0; i < FLIPPERS_SIZE; i++) {
     if (flippers[i].flipAmount) {
       singleFlip(i);
       flippers[i].flipAmount--;
@@ -604,8 +607,9 @@ int goNewPositionTick() {
       delay(latchTime);
       noFlips--;
     }
-    delay(parallelTime);
+    //delay(parallelTime);
   }
+  disableAllFlippers();
   return noFlips;
 }
 
@@ -613,27 +617,39 @@ int goNewPositionTick() {
 int goHomeTick() {
   // Moves all Flipers towards the Home Position
   int allHome = 0;
-  for (int i = 0; i < sizeof(flippers) / sizeof(flippers[0]); i++) {
+  enableAllFlippers();
+  for (int i = 0; i < FLIPPERS_SIZE; i++) {
     if (digitalRead(flippers[i].home)) {
       singleFlip(i);
     }
     else {
-      delay(latchTime);
       allHome++;
     }
-    delay(parallelTime);
+    //delay(parallelTime);
   }
+  disableAllFlippers();
   return allHome == sizeof(flippers) / sizeof(flippers[0]);
 }
 
+void enableAllFlippers() {
+  // Sets the enable pin HIGH for all flippers
+  for (int i = 0; i < FLIPPERS_SIZE; i++) {
+    digitalWrite(flippers[index].enable), HIGH);
+  }
+}
+
+void disableAllFlippers() {
+  // Delays for `latchTime` ms and then sets the enable pin LOW for all flippers
+  delay(latchTime);
+  for (int i = 0; i < FLIPPERS_SIZE; i++) {
+    digitalWrite(flippers[index].enable), LOW);
+  }
+}
 
 void singleFlip(int index) {
   // Advances a Flipper by a Single Flip
-  digitalWrite(flippers[index].enable, HIGH);
   digitalWrite(flippers[index].in1, flippers[index].flipState);
   digitalWrite(flippers[index].in2, !flippers[index].flipState);
-  delay(latchTime);
-  digitalWrite(flippers[index].enable, LOW);
 
   flippers[index].flipState = flippers[index].flipState == HIGH ? LOW : HIGH;
 }
