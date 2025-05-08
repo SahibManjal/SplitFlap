@@ -38,7 +38,6 @@ Flipper flippers[] = {
 
 // State and Flap data
 byte latchTime = 90;
-//byte parallelTime = 50 / FLIPPERS_SIZE;
 
 // Going home phase
 int initialHomeBool = 1;
@@ -595,7 +594,7 @@ void loop() {
 
 int goNewPositionTick() {
   // Moves all Flipers towards the New Position
-  int noFlips = sizeof(flippers) / sizeof(flippers[0]);
+  int noFlips = FLIPPERS_SIZE;
   enableAllFlippers();
   for (int i = 0; i < FLIPPERS_SIZE; i++) {
     if (flippers[i].flipAmount) {
@@ -604,10 +603,8 @@ int goNewPositionTick() {
       flippers[i].flapPosition = mod(flippers[i].flapPosition + 1, 60);
     }
     else {
-      delay(latchTime);
       noFlips--;
     }
-    //delay(parallelTime);
   }
   disableAllFlippers();
   return noFlips;
@@ -625,16 +622,15 @@ int goHomeTick() {
     else {
       allHome++;
     }
-    //delay(parallelTime);
   }
   disableAllFlippers();
-  return allHome == sizeof(flippers) / sizeof(flippers[0]);
+  return allHome == FLIPPERS_SIZE;
 }
 
 void enableAllFlippers() {
   // Sets the enable pin HIGH for all flippers
   for (int i = 0; i < FLIPPERS_SIZE; i++) {
-    digitalWrite(flippers[index].enable), HIGH);
+    digitalWrite(flippers[i].enable, HIGH);
   }
 }
 
@@ -642,7 +638,7 @@ void disableAllFlippers() {
   // Delays for `latchTime` ms and then sets the enable pin LOW for all flippers
   delay(latchTime);
   for (int i = 0; i < FLIPPERS_SIZE; i++) {
-    digitalWrite(flippers[index].enable), LOW);
+    digitalWrite(flippers[i].enable, LOW);
   }
 }
 
