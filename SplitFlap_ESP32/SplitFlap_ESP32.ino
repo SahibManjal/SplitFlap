@@ -37,7 +37,7 @@ Flipper flippers[] = {
 };
 
 // State and Flap data
-byte latchTime = 90;
+byte latchTime = 120;
 
 // Going home phase
 int initialHomeBool = 1;
