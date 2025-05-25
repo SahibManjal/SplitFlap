@@ -21,7 +21,7 @@ The byte latchTime is the time needed for the h-bridge impulse go through, this 
 ## TODO
 - [ ] Webscraping for live delays and Equinoxes
 - [ ] Raspberry Pi Server Setup
-- [ ] ESO32 Communication with Raspberry Pi
+- [ ] ESP32 Communication with Raspberry Pi
 - [ ] LCD/LED Button Control
   - [ ] Ignore Timetable and Stay at a Particular Flap
   - [ ] Choosing Timetables
