@@ -112,10 +112,7 @@ void loop() {
   }
   // All Flippers go Home when we start
   if (initialHomeBool) {
-    int allHome = goHomeTick();
-    if (allHome) {
-      initialHomeBool = 0;
-    }
+    initialHomeBool = !goHomeTick();
   }
   // Move All Flippers to new Positions
   else if (displayedTrain != currentTrain) {
