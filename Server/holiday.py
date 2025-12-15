@@ -7,15 +7,6 @@ WEEKENDS = ["Saturday", "Sunday"]
 HOLIDAY_SCHEDULE_TYPE = ["National Holiday", "Bank holiday"]
 
 
-def getJapanDay():
-    """
-    Returns the current time in Japan.
-    """
-    utc_time = datetime.datetime.now(datetime.timezone.utc)
-    japan_timezone = pytz.timezone("Asia/Tokyo")
-    return utc_time.astimezone(japan_timezone)
-
-
 def createParser(url):
     """
     Returns a BeautifulSoup parser with a header.
@@ -45,25 +36,18 @@ def getHolidayScheduleDays(soup):
     return holidays
 
 
-def isWeekdayTimetable():
+def isHoliday(japan_time):
     """
     Returns False if it's a weekend or Japanese holiday, True otherwise.
     """
-    japan_time = getJapanDay()
     japan_year = japan_time.strftime("%Y")
     japan_day = japan_time.strftime("%b %-d")
-
-    if japan_time.strftime("%A") in WEEKENDS:
-        return False
 
     soup = createParser("https://www.timeanddate.com/holidays/japan/" + japan_year)
     holidays = getHolidayScheduleDays(soup)
 
     for holiday in holidays:
         if holiday[0] == japan_day:
-            return False
+            return True
 
-    return True
-
-
-print(isWeekdayTimetable())
+    return False
