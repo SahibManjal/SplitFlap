@@ -1,4 +1,6 @@
 #include <WiFi.h>
+#include <ArduinoHttpClient.h>
+#include <ArduinoJson.h>
 #include "time.h"
 #include "WiFi_Info.h"
 #include "Flipper_Config.h"
@@ -7,9 +9,6 @@
 // Time holders
 int hour;
 int minutes;
-int wday;
-int month;
-int day;
 enum stateType {NORMAL, TIMEDROP, STALLTIME};
 enum stateType state;
 
@@ -18,6 +17,7 @@ int initialHomeBool = 1;
 
 // TimeTable Index
 int currentTrain;
+String response;
 
 // Displayed TimeTable Index
 int displayedTrain = 0;
@@ -25,7 +25,13 @@ int displayedTrain = 0;
 // Empty Times
 char* emptyTimes[] = {"Pass", "Terminates Here", "Blank", "Not In Service", ""};
 
-TimetableEntry *timetable;
+// Server Info
+int port = 8080;
+char serverAddress[] = "10.20.141.6";
+WiFiClient wifi;
+HttpClient client = HttpClient(wifi, serverAddress, port);
+
+TimetableEntry *timetable = nullptr;
 int timetableLength;
 
 int mod(int x, int n) {
@@ -36,24 +42,41 @@ int mod(int x, int n) {
   return rem;
 }
 
-int useWeekend() {
-  return (wday == 0) || (wday == 6) || (month == 1 && day == 1) || (month == 1 && day >= 8 && day <= 14 && wday == 1) || 
-  (month == 2 && day == 11) || (month == 2 && day == 23) || (month == 3 && day == 20) || (month == 4 && day == 29) ||
-  (month == 5 && day == 3) || (month == 5 && day == 4) || (month == 5 && day == 5) || (month == 7 && day >= 15 && day <= 21 && wday == 1) ||
-  (month == 8 && day == 11) || (month == 9 && day >= 15 && day <= 21 && wday == 1) || (month == 9 && day == 23) ||
-  (month == 10 && day >= 8 && day <= 14 && wday == 1) || (month == 11 && day == 3) || (month == 11 && day == 23);
-}
 
-
-void updateTime(int dayUpdate) {
+void updateTime() {
   struct tm currentTime;
   getLocalTime(&currentTime);
   hour = currentTime.tm_hour;
   minutes = currentTime.tm_min;
-  if (dayUpdate) {
-    wday = currentTime.tm_wday;
-    month = currentTime.tm_mon + 1;
-    day = currentTime.tm_mday;
+}
+
+void getTimetable() {
+  client.get("/");
+  int statusCode = client.responseStatusCode();
+  response = client.responseBody();
+
+  // Allocate the JSON document
+  JsonDocument doc;
+
+  // Deserialize the JSON document
+  DeserializationError error = deserializeJson(doc, response);
+
+  // TODO: Handle error
+
+  // Turn Json into TimetableEntry
+  JsonArray array = doc.as<JsonArray>();
+  delete[] timetable;
+  timetableLength = array.size();
+  timetable = new TimetableEntry[timetableLength];
+  int index = 0;
+  for(JsonVariant v : array) {
+    JsonObject extracted = v.as<JsonObject>();
+    timetable[index].location = String(extracted["location"]);
+    timetable[index].hour = extracted["hour"];
+    timetable[index].minutes = extracted["minutes"];
+    timetable[index].destinationFlap = extracted["destinationFlap"];
+    timetable[index].stopFlap = extracted["stopFlap"];
+    index++;
   }
 }
 
@@ -65,27 +88,23 @@ void setup() {
     pinMode(flippers[i].enable, OUTPUT);
     pinMode(flippers[i].home, INPUT);
   }
+  Serial.begin(9600);
 
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  while ( WiFi.status() != WL_CONNECTED ) {
+  while (WiFi.status() != WL_CONNECTED ) {
     delay(500);
+    Serial.println("SNEE");
   }
+  Serial.println("SNEEQUENCE OVER :(");
 
   configTime(0, 0, "pool.ntp.org");
   setenv("TZ","JST-9",1);
   tzset();
 
-  updateTime(1);
+  updateTime();
 
   // Determine what Timetable to use
-  if (useWeekend()) {
-    timetable = weekendTimetable;
-    timetableLength = WEEKEND_TIMETABLE_LENGTH;
-  } 
-  else {
-      timetable = weekdayTimetable;
-      timetableLength = WEEKDAY_TIMETABLE_LENGTH;
-  }
+  getTimetable();
 
   state = NORMAL;
 
@@ -93,35 +112,28 @@ void setup() {
   for (int i = 0; i < timetableLength; i++) {
     if (timetable[i].hour * 60 + timetable[i].minutes > hour * 60 + minutes) {
       currentTrain = i;
+      Serial.println("Current train index found");
       break;
     }
   }
 }
 
 void loop() {
-  updateTime(0);
-
-  // Determine what Timetable to use
-  if (useWeekend()) {
-    timetable = weekendTimetable;
-    timetableLength = WEEKEND_TIMETABLE_LENGTH;
-  } 
-  else {
-      timetable = weekdayTimetable;
-      timetableLength = WEEKDAY_TIMETABLE_LENGTH;
-  }
+  updateTime();
+  
   // All Flippers go Home when we start
   if (initialHomeBool) {
+    Serial.println("Homing inbound");
     initialHomeBool = !goHomeTick();
   }
   // Move All Flippers to new Positions
   else if (displayedTrain != currentTrain) {
-    int noTime = 0;
-    for (int i = 0; emptyTimes[i] != ""; i++) {
-      if (timetable[currentTrain].location == emptyTimes[i]) {
-        noTime = 1;
-      }
-    }
+    // int noTime = 0;
+    // for (int i = 0; emptyTimes[i] != ""; i++) {
+    //   if (timetable[currentTrain].location == emptyTimes[i]) {
+    //     noTime = 1;
+    //   }
+    // }
     flippers[0].flipAmount = mod(timetable[currentTrain].destinationFlap - flippers[0].flapPosition, 60);
     flippers[1].flipAmount = mod(timetable[currentTrain].stopFlap - flippers[1].flapPosition, 60);
     // if (noTime) {
@@ -155,7 +167,7 @@ void loop() {
           currentTrain = nextTrain;
           // Starts new timetable if necessary
           if (currentTrain == 0) {
-            updateTime(1);
+            getTimetable();
           }
         }
         break;
@@ -164,7 +176,7 @@ void loop() {
           currentTrain = nextTrain;
           // Starts new timetable if necessary
           if (currentTrain == 0) {
-            updateTime(1);
+            getTimetable();
           }
           state = STALLTIME;
         }

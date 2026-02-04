@@ -7,9 +7,9 @@ class Serv(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.end_headers()
-        self.wfile.write(json.dumps(getTimetable()).encode('utf-8'))
+        self.wfile.write(json.dumps(getTimetable()).encode("utf-8"))
 
 
-if __name__ == '__main__':
-    httpd = HTTPServer(('localhost', 8080), Serv)
+if __name__ == "__main__":
+    httpd = HTTPServer(("0.0.0.0", 8080), Serv)
     httpd.serve_forever()
