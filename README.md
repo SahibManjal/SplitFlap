@@ -1,32 +1,51 @@
+[![License](https://img.shields.io/github/license/SahibManjal/SplitFlap?color=darkgreen&labelColor=grey&style=flat-circle)](https://github.com/SahibManjal/SplitFlap/blob/readme/LICENSE)
 # SplitFlap
-## Setup
-### Hardware Interface
- - Input1 and Input2 are for rotating the motor and its magnet
- - When enable pin is HIGH, the motor can move 
- - Home pin corresponds to Hall sensor being at Flipper position 0
 
-The byte flipState provides an impulse to an h-bridge to initiate an index out of the motor, consequently the next index of the motor is initiated by an impulse of reverse polarity from the previous.
+About
 
-The byte latchTime is the time needed for the h-bridge impulse go through, this is the minimum time required for it to flip correctly.
+- small GIF of it flipping
+- why we're doing this and what it does
 
-### TimeTable Format
+## Getting Started
 
+### Installation
 
-## ESP32
+- Install the Arduino IDE
 
+- Arduino packages
+  - ArduinoJSON
+  - ArduinoHttpClient
 
-## Arduino UNO
+- Setup ESP32
 
+- Setup RPI
 
-## TODO
-- [ ] Webscraping for live delays and Equinoxes
-- [ ] Raspberry Pi Server Setup
-- [ ] ESP32 Communication with Raspberry Pi
-- [ ] LCD/LED Button Control
-  - [ ] Ignore Timetable and Stay at a Particular Flap
-  - [ ] Choosing Timetables
+### Configuration
+- Configs//Hardware Interface
+- remember the file names!!!! (or maybe the code should be changed to take them in)
+
+## Roadmap
+
+- [x] Make split flap display flip
+- [x] Follow a hardcoded schedule
+- [x] Migrate code from Arduino to ESP
+- [x] Support multiple split flap displays
+  - [x] destination 
+  - [x] stopping pattern 
+  - [x] time
+- [x] Setup server for selecting timetable
+- [x] Setup ESP32 communication with server
+- [ ] Webscrape for live delays and cancelations
+- [ ] Fix initial index of motor mismatch
+- [ ] Configure code for control box
 
 ## References
-1. Kintetsu Corporation Timetables - https://eki.kintetsu.co.jp/english/T1
+1. [Kintetsu Corporation Timetables][kintetsu-timetable]
+2. [Kintetsu Corporation Livetracking][kintetsu-livetracking]
+3. [Helpful SplitFlap Reverse Engineering Blog Post][splitflap-blog]
+4. [Japanese Holidays][japan-holidays]
 
-2. Helpful SplitFlap Reverse Engineering Blog Post - https://web.archive.org/web/20230327031600/https://ohararp.com/split-flap-reverse-engineering-part-1/
+[kintetsu-timetable]: https://eki.kintetsu.co.jp/english/T1
+[kintetsu-livetracking]: https://tid.kintetsu.co.jp/LocationWeb/
+[splitflap-blog]: https://web.archive.org/web/20230327031600/https://ohararp.com/split-flap-reverse-engineering-part-1/
+[japan-holidays]: https://www.timeanddate.com/holidays/japan/
