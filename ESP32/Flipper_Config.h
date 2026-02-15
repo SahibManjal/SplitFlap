@@ -4,8 +4,16 @@
 
 #include <Arduino.h>
 
+enum FlipperType {
+  DESTINATION,
+  STOP_PATTERN,
+  HOUR,
+  TENS_MINUTE,
+  ONES_MINUTE,
+};
+
 struct Flipper {
-  String type;
+  FlipperType type;
   int in1;
   int in2;
   int enable;
