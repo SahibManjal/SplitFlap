@@ -1,7 +1,7 @@
 #include <WiFi.h>
 #include <ArduinoHttpClient.h>
 #include <ArduinoJson.h>
-#include "time.h"
+#include <time.h>
 #include "WiFi_Info.h"
 #include "Flipper_Config.h"
 #include "Timetable.h"
@@ -58,10 +58,11 @@ void getTimetable() {
   // Allocate the JSON document
   JsonDocument doc;
 
-  // Deserialize the JSON document
-  DeserializationError error = deserializeJson(doc, response);
-
-  // TODO: Handle error
+  // Deserialize the JSON document and handle error
+  while (DeserializationError error = deserializeJson(doc, response)) {
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.f_str());
+  }
 
   // Turn Json into TimetableEntry
   JsonArray array = doc.as<JsonArray>();
@@ -93,9 +94,7 @@ void setup() {
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   while (WiFi.status() != WL_CONNECTED ) {
     delay(500);
-    Serial.println("SNEE");
   }
-  Serial.println("SNEEQUENCE OVER :(");
 
   configTime(0, 0, "pool.ntp.org");
   setenv("TZ","JST-9",1);
@@ -112,7 +111,6 @@ void setup() {
   for (int i = 0; i < timetableLength; i++) {
     if (timetable[i].hour * 60 + timetable[i].minutes > hour * 60 + minutes) {
       currentTrain = i;
-      Serial.println("Current train index found");
       break;
     }
   }
@@ -123,7 +121,6 @@ void loop() {
   
   // All Flippers go Home when we start
   if (initialHomeBool) {
-    Serial.println("Homing inbound");
     initialHomeBool = !goHomeTick();
   }
   // Move All Flippers to new Positions

@@ -13,9 +13,4 @@ struct TimetableEntry
   int stopFlap;
 };
 
-extern const int WEEKDAY_TIMETABLE_LENGTH;
-extern const int WEEKEND_TIMETABLE_LENGTH;
-extern TimetableEntry weekdayTimetable[];
-extern TimetableEntry weekendTimetable[];
-
 #endif
