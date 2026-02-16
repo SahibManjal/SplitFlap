@@ -1,7 +1,7 @@
 #include <WiFi.h>
 #include <ArduinoHttpClient.h>
 #include <ArduinoJson.h>
-#include "time.h"
+#include <time.h>
 #include "WiFi_Info.h"
 #include "Flipper_Config.h"
 #include "Timetable.h"
@@ -58,10 +58,11 @@ void getTimetable() {
   // Allocate the JSON document
   JsonDocument doc;
 
-  // Deserialize the JSON document
-  DeserializationError error = deserializeJson(doc, response);
-
-  // TODO: Handle error
+  // Deserialize the JSON document and handle error
+  while (DeserializationError error = deserializeJson(doc, response)) {
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.f_str());
+  }
 
   // Turn Json into TimetableEntry
   JsonArray array = doc.as<JsonArray>();
@@ -93,9 +94,7 @@ void setup() {
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   while (WiFi.status() != WL_CONNECTED ) {
     delay(500);
-    Serial.println("SNEE");
   }
-  Serial.println("SNEEQUENCE OVER :(");
 
   configTime(0, 0, "pool.ntp.org");
   setenv("TZ","JST-9",1);
@@ -112,7 +111,6 @@ void setup() {
   for (int i = 0; i < timetableLength; i++) {
     if (timetable[i].hour * 60 + timetable[i].minutes > hour * 60 + minutes) {
       currentTrain = i;
-      Serial.println("Current train index found");
       break;
     }
   }
@@ -123,29 +121,40 @@ void loop() {
   
   // All Flippers go Home when we start
   if (initialHomeBool) {
-    Serial.println("Homing inbound");
     initialHomeBool = !goHomeTick();
   }
+  
   // Move All Flippers to new Positions
   else if (displayedTrain != currentTrain) {
-    // int noTime = 0;
-    // for (int i = 0; emptyTimes[i] != ""; i++) {
-    //   if (timetable[currentTrain].location == emptyTimes[i]) {
-    //     noTime = 1;
-    //   }
-    // }
-    flippers[0].flipAmount = mod(timetable[currentTrain].destinationFlap - flippers[0].flapPosition, 60);
-    flippers[1].flipAmount = mod(timetable[currentTrain].stopFlap - flippers[1].flapPosition, 60);
-    // if (noTime) {
-    //   flippers[2].flipAmount = 60 - flippers[2].flapPosition;
-    //   flippers[3].flipAmount = 60 - flippers[3].flapPosition;
-    //   flippers[4].flipAmount = 60 - flippers[4].flapPosition;
-    // }
-    // else {
-    //   flippers[2].flipAmount = mod(timetable[currentTrain].hour - flippers[2].flapPosition + 1, 60);
-    //   flippers[3].flipAmount = mod(timetable[currentTrain].minutes / 10 - flippers[3].flapPosition + 1, 60);
-    //   flippers[4].flipAmount = mod(timetable[currentTrain].minutes % 10 - flippers[4].flapPosition + 1, 60);
-    // }
+    int noTime = 0;
+    for (int i = 0; emptyTimes[i] != ""; i++) {
+      if (timetable[currentTrain].location == emptyTimes[i]) {
+        noTime = 1;
+      }
+    }
+
+    for (int i = 0; i < FLIPPER_AMOUNT; i++) {
+      int nextFlap = 0;
+      switch (flippers[i].type) {
+        case DESTINATION:
+          nextFlap = timetable[currentTrain].destinationFlap;
+          break;
+        case STOP_PATTERN:
+          nextFlap = timetable[currentTrain].stopFlap;
+          break;
+        case HOUR:
+          nextFlap = noTime ? 60 : timetable[currentTrain].hour + 1;
+          break;
+        case TENS_MINUTE:
+          nextFlap = noTime ? 60 : timetable[currentTrain].minutes / 10 + 1;
+          break;
+        case ONES_MINUTE:
+          nextFlap = noTime ? 60 : timetable[currentTrain].minutes % 10 + 1;
+          break;
+      }
+      flippers[i].flipAmount = mod(nextFlap - flippers[i].flapPosition, 60);
+    }
+
     int haveFlips = 1;
     while (haveFlips) {
       haveFlips = goNewPositionTick();
