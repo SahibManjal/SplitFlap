@@ -22,14 +22,14 @@ def getFinalTimetableTimes():
     timetables.
     """
     out = {}
-    with open("weekdayTimetable.json", 'r') as file:
+    with open("timetable/weekday.json", 'r') as file:
         data = json.load(file)
         weekday = {}
         weekday["hour"] = data[-1]["hour"]
         weekday["minutes"] = data[-1]["minutes"]
         out["weekday"] = weekday
 
-    with open("weekendTimetable.json", 'r') as file:
+    with open("timetable/weekend.json", 'r') as file:
         data = json.load(file)
         weekend = {}
         weekend["hour"] = data[-1]["hour"]

@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": [
+    {
+      "type": "object",
+      "properties": {
+        "location": {
+          "type": "string"
+        },
+        "hour": {
+          "type": "integer"
+        },
+        "minutes": {
+          "type": "integer"
+        },
+        "destinationFlap": {
+          "type": "integer"
+        },
+        "stopFlap": {
+          "type": "integer"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "location",
+        "hour",
+        "minutes",
+        "destinationFlap",
+        "stopFlap"
+      ]
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 #include <ArduinoHttpClient.h>
 #include <ArduinoJson.h>
 #include <time.h>
-#include "WiFi_Info.h"
+#include "Network_Config.h"
 #include "Flipper_Config.h"
 #include "Timetable.h"
 
@@ -26,10 +26,8 @@ int displayedTrain = 0;
 char* emptyTimes[] = {"Pass", "Terminates Here", "Blank", "Not In Service", ""};
 
 // Server Info
-int port = 8080;
-char serverAddress[] = "10.20.141.6";
 WiFiClient wifi;
-HttpClient client = HttpClient(wifi, serverAddress, port);
+HttpClient client = HttpClient(wifi, SERVER_ADDRESS, 8080);
 
 TimetableEntry *timetable = nullptr;
 int timetableLength;
@@ -126,6 +124,7 @@ void loop() {
   
   // Move All Flippers to new Positions
   else if (displayedTrain != currentTrain) {
+    // noTime is true when the time flippers must display blank
     int noTime = 0;
     for (int i = 0; emptyTimes[i] != ""; i++) {
       if (timetable[currentTrain].location == emptyTimes[i]) {
