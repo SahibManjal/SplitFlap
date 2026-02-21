@@ -23,8 +23,11 @@ struct Flipper {
   int flapPosition;
 };
 
-#define LATCH_TIME 120
-#define FLIPPER_AMOUNT 2
+// Milliseconds between consecutive flips for a single split-flap display.
+// REQUIRED: must be >= 75 to function properly
+#define LATCH_TIME -1
+// the number of entries in the flippers array
+#define FLIPPER_AMOUNT -1
 
 extern Flipper flippers[FLIPPER_AMOUNT];
 
