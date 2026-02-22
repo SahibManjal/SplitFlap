@@ -18,9 +18,6 @@ struct Flipper {
   int in2;
   int enable;
   int home;
-  byte flipState;
-  int flipAmount;
-  int flapPosition;
 };
 
 // Milliseconds between consecutive flips for a single split-flap display.
@@ -29,6 +26,10 @@ struct Flipper {
 // the number of entries in the flippers array
 #define FLIPPER_AMOUNT -1
 
-extern Flipper flippers[FLIPPER_AMOUNT];
+// Pin data
+Flipper flippers[FLIPPER_AMOUNT] = {
+    {DESTINATION, 4, 15, 2, 33},
+    {STOP_PATTERN, 23, 22, 21, 32},
+};
 
 #endif

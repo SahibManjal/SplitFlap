@@ -4,8 +4,7 @@
 
 #include <Arduino.h>
 
-struct TimetableEntry
-{
+struct TimetableEntry {
   String location;
   int hour;
   int minutes;

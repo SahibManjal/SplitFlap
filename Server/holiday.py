@@ -1,7 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-import datetime
-import pytz
 
 WEEKENDS = ["Saturday", "Sunday"]
 HOLIDAY_SCHEDULE_TYPE = ["National Holiday", "Bank holiday"]

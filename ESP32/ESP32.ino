@@ -1,19 +1,29 @@
-#include <WiFi.h>
+#include "Flipper_Config.h"
+#include "Network_Config.h"
+#include "Timetable.h"
 #include <ArduinoHttpClient.h>
 #include <ArduinoJson.h>
+#include <WiFi.h>
 #include <time.h>
-#include "Network_Config.h"
-#include "Flipper_Config.h"
-#include "Timetable.h"
 
 // Time holders
 int hour;
 int minutes;
-enum stateType {NORMAL, TIMEDROP, STALLTIME};
+enum stateType { NORMAL, TIMEDROP, STALLTIME };
 enum stateType state;
 
+// Flippers with positions
+struct FlipperWithState {
+  Flipper flipper;
+  byte flipState = LOW;
+  int flipAmount = 0;
+  int flapPosition = 0;
+};
+
+FlipperWithState flippersWithState[FLIPPER_AMOUNT];
+
 // Going home phase
-int initialHomeBool = 1;
+bool initialHome = true;
 
 // TimeTable Index
 int currentTrain;
@@ -23,7 +33,8 @@ String response;
 int displayedTrain = 0;
 
 // Empty Times
-char* emptyTimes[] = {"Pass", "Terminates Here", "Blank", "Not In Service", ""};
+char *emptyTimes[] = {"Pass", "Terminates Here", "Blank", "Not In Service",
+                      nullptr};
 
 // Server Info
 WiFiClient wifi;
@@ -39,7 +50,6 @@ int mod(int x, int n) {
   }
   return rem;
 }
-
 
 void updateTime() {
   struct tm currentTime;
@@ -68,7 +78,7 @@ void getTimetable() {
   timetableLength = array.size();
   timetable = new TimetableEntry[timetableLength];
   int index = 0;
-  for(JsonVariant v : array) {
+  for (JsonVariant v : array) {
     JsonObject extracted = v.as<JsonObject>();
     timetable[index].location = String(extracted["location"]);
     timetable[index].hour = extracted["hour"];
@@ -79,23 +89,24 @@ void getTimetable() {
   }
 }
 
-
 void setup() {
   for (int i = 0; i < FLIPPER_AMOUNT; i++) {
     pinMode(flippers[i].in1, OUTPUT);
     pinMode(flippers[i].in2, OUTPUT);
     pinMode(flippers[i].enable, OUTPUT);
     pinMode(flippers[i].home, INPUT);
+
+    flippersWithState[i].flipper = flippers[i];
   }
   Serial.begin(9600);
 
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  while (WiFi.status() != WL_CONNECTED ) {
+  while (WiFi.status() != WL_CONNECTED) {
     delay(500);
   }
 
   configTime(0, 0, "pool.ntp.org");
-  setenv("TZ","JST-9",1);
+  setenv("TZ", "JST-9", 1);
   tzset();
 
   updateTime();
@@ -116,99 +127,100 @@ void setup() {
 
 void loop() {
   updateTime();
-  
+
   // All Flippers go Home when we start
-  if (initialHomeBool) {
-    initialHomeBool = !goHomeTick();
+  if (initialHome) {
+    initialHome = !goHomeTick();
   }
-  
+
   // Move All Flippers to new Positions
   else if (displayedTrain != currentTrain) {
     // noTime is true when the time flippers must display blank
-    int noTime = 0;
-    for (int i = 0; emptyTimes[i] != ""; i++) {
+    bool noTime = false;
+    for (int i = 0; emptyTimes[i] != nullptr; i++) {
       if (timetable[currentTrain].location == emptyTimes[i]) {
-        noTime = 1;
+        noTime = true;
       }
     }
 
     for (int i = 0; i < FLIPPER_AMOUNT; i++) {
       int nextFlap = 0;
-      switch (flippers[i].type) {
-        case DESTINATION:
-          nextFlap = timetable[currentTrain].destinationFlap;
-          break;
-        case STOP_PATTERN:
-          nextFlap = timetable[currentTrain].stopFlap;
-          break;
-        case HOUR:
-          nextFlap = noTime ? 60 : timetable[currentTrain].hour + 1;
-          break;
-        case TENS_MINUTE:
-          nextFlap = noTime ? 60 : timetable[currentTrain].minutes / 10 + 1;
-          break;
-        case ONES_MINUTE:
-          nextFlap = noTime ? 60 : timetable[currentTrain].minutes % 10 + 1;
-          break;
+      switch (flippersWithState[i].flipper.type) {
+      case DESTINATION:
+        nextFlap = timetable[currentTrain].destinationFlap;
+        break;
+      case STOP_PATTERN:
+        nextFlap = timetable[currentTrain].stopFlap;
+        break;
+      case HOUR:
+        nextFlap = noTime ? 60 : timetable[currentTrain].hour + 1;
+        break;
+      case TENS_MINUTE:
+        nextFlap = noTime ? 60 : timetable[currentTrain].minutes / 10 + 1;
+        break;
+      case ONES_MINUTE:
+        nextFlap = noTime ? 60 : timetable[currentTrain].minutes % 10 + 1;
+        break;
       }
-      flippers[i].flipAmount = mod(nextFlap - flippers[i].flapPosition, 60);
+      flippersWithState[i].flipAmount =
+          mod(nextFlap - flippersWithState[i].flapPosition, 60);
     }
 
-    int haveFlips = 1;
-    while (haveFlips) {
-      haveFlips = goNewPositionTick();
-    }
+    while (goNewPositionTick())
+      ;
     displayedTrain = currentTrain;
   }
   // Updates to New Timetable Position
   else {
-    int trainStopTime = timetable[displayedTrain].hour * 60 + timetable[displayedTrain].minutes;
+    int trainStopTime =
+        timetable[displayedTrain].hour * 60 + timetable[displayedTrain].minutes;
     int nextTrain = mod(currentTrain + 1, timetableLength);
-    int nextTrainStopTime = timetable[nextTrain].hour * 60 + timetable[nextTrain].minutes;
+    int nextTrainStopTime =
+        timetable[nextTrain].hour * 60 + timetable[nextTrain].minutes;
     // Handles moving from hour 23 to hour 0
     switch (state) {
-      case NORMAL:
-        if (nextTrainStopTime < trainStopTime) {
-          state = TIMEDROP;
+    case NORMAL:
+      if (nextTrainStopTime < trainStopTime) {
+        state = TIMEDROP;
+      }
+      if (trainStopTime < hour * 60 + minutes) {
+        currentTrain = nextTrain;
+        // Starts new timetable if necessary
+        if (currentTrain == 0) {
+          getTimetable();
         }
-        if (trainStopTime < hour * 60 + minutes) {
-          currentTrain = nextTrain;
-          // Starts new timetable if necessary
-          if (currentTrain == 0) {
-            getTimetable();
-          }
+      }
+      break;
+    case TIMEDROP:
+      if ((trainStopTime < hour * 60 + minutes) || hour == 0) {
+        currentTrain = nextTrain;
+        // Starts new timetable if necessary
+        if (currentTrain == 0) {
+          getTimetable();
         }
-        break;
-      case TIMEDROP:
-        if ((trainStopTime < hour * 60 + minutes) || hour == 0) {
-          currentTrain = nextTrain;
-          // Starts new timetable if necessary
-          if (currentTrain == 0) {
-            getTimetable();
-          }
-          state = STALLTIME;
-        }
-        break;
-      case STALLTIME:
-        if (trainStopTime == hour * 60 + minutes) {
-          state = NORMAL;
-        }
-        break;
+        state = STALLTIME;
+      }
+      break;
+    case STALLTIME:
+      if (trainStopTime == hour * 60 + minutes) {
+        state = NORMAL;
+      }
+      break;
     }
   }
 }
 
-int goNewPositionTick() {
+bool goNewPositionTick() {
   // Moves all Flipers towards the New Position
   int noFlips = FLIPPER_AMOUNT;
   enableAllFlippers();
   for (int i = 0; i < FLIPPER_AMOUNT; i++) {
-    if (flippers[i].flipAmount) {
+    if (flippersWithState[i].flipAmount) {
       singleFlip(i);
-      flippers[i].flipAmount--;
-      flippers[i].flapPosition = mod(flippers[i].flapPosition + 1, 60);
-    }
-    else {
+      flippersWithState[i].flipAmount--;
+      flippersWithState[i].flapPosition =
+          mod(flippersWithState[i].flapPosition + 1, 60);
+    } else {
       noFlips--;
     }
   }
@@ -216,16 +228,14 @@ int goNewPositionTick() {
   return noFlips;
 }
 
-
-int goHomeTick() {
+bool goHomeTick() {
   // Moves all Flipers towards the Home Position
   int allHome = 0;
   enableAllFlippers();
   for (int i = 0; i < FLIPPER_AMOUNT; i++) {
-    if (digitalRead(flippers[i].home)) {
+    if (digitalRead(flippersWithState[i].flipper.home)) {
       singleFlip(i);
-    }
-    else {
+    } else {
       allHome++;
     }
   }
@@ -236,7 +246,7 @@ int goHomeTick() {
 void enableAllFlippers() {
   // Sets the enable pin HIGH for all flippers
   for (int i = 0; i < FLIPPER_AMOUNT; i++) {
-    digitalWrite(flippers[i].enable, HIGH);
+    digitalWrite(flippersWithState[i].flipper.enable, HIGH);
   }
 }
 
@@ -244,14 +254,17 @@ void disableAllFlippers() {
   // Delays for `latchTime` ms and then sets the enable pin LOW for all flippers
   delay(LATCH_TIME);
   for (int i = 0; i < FLIPPER_AMOUNT; i++) {
-    digitalWrite(flippers[i].enable, LOW);
+    digitalWrite(flippersWithState[i].flipper.enable, LOW);
   }
 }
 
 void singleFlip(int index) {
   // Advances a Flipper by a Single Flip
-  digitalWrite(flippers[index].in1, flippers[index].flipState);
-  digitalWrite(flippers[index].in2, !flippers[index].flipState);
+  digitalWrite(flippersWithState[index].flipper.in1,
+               flippersWithState[index].flipState);
+  digitalWrite(flippersWithState[index].flipper.in2,
+               !flippersWithState[index].flipState);
 
-  flippers[index].flipState = flippers[index].flipState == HIGH ? LOW : HIGH;
+  flippersWithState[index].flipState =
+      flippersWithState[index].flipState == HIGH ? LOW : HIGH;
 }

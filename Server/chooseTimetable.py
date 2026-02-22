@@ -22,14 +22,14 @@ def getFinalTimetableTimes():
     timetables.
     """
     out = {}
-    with open("timetable/weekday.json", 'r') as file:
+    with open("timetable/weekday.json", "r") as file:
         data = json.load(file)
         weekday = {}
         weekday["hour"] = data[-1]["hour"]
         weekday["minutes"] = data[-1]["minutes"]
         out["weekday"] = weekday
 
-    with open("timetable/weekend.json", 'r') as file:
+    with open("timetable/weekend.json", "r") as file:
         data = json.load(file)
         weekend = {}
         weekend["hour"] = data[-1]["hour"]
@@ -60,8 +60,8 @@ def isWeekendTimetable():
 
     first_day_type = "weekend" if first_day_holiday else "weekday"
     hour, minute = (
-        finaltimes[first_day_type]['hour'],
-        finaltimes[first_day_type]['minutes']
+        finaltimes[first_day_type]["hour"],
+        finaltimes[first_day_type]["minutes"],
     )
     if hour >= 12:
         boundary = first_day
@@ -82,8 +82,8 @@ def getTimetable():
     Returns the timetable to be used at the current time.
     """
     if isWeekendTimetable():
-        with open("weekendTimetable.json", 'r') as file:
+        with open("weekendTimetable.json", "r") as file:
             return json.load(file)
 
-    with open("weekdayTimetable.json", 'r') as file:
+    with open("weekdayTimetable.json", "r") as file:
         return json.load(file)
