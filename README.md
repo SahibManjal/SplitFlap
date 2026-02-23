@@ -1,6 +1,15 @@
 [![License](https://img.shields.io/github/license/SahibManjal/SplitFlap?color=darkgreen&labelColor=grey&style=flat-circle)](https://github.com/SahibManjal/SplitFlap/blob/readme/LICENSE)
 # SplitFlap
 
+SplitFlap enables the use of [split-flap displays][split-flap] as train signs following a preset schedule.
+With a little wiring, a microcontroller, and a small server, convert your room into a train station by making your decomissioned train signs flip as they would in their heyday!
+
+<p align="center">
+  <img src="flip.gif" alt="split-flaps flipping" />
+  <br>
+  <a href="https://en.wikipedia.org/wiki/Yamato-Yagi_Station"> Yamato-Yagi station</a>'s split-flap displays flipping 
+</p>
+
 ## Setup
 
 ### Prerequisites
@@ -42,7 +51,7 @@ Set the `FLIPPER_AMOUNT` and `LATCH_TIME` macros in [`Flipper_Config.h`](ESP32/F
 // the number of entries in the flippers array
 #define FLIPPER_AMOUNT -1
 ```
-To achieve speeds similar to <flipper.gif>, set `LATCH_TIME=120`.
+To achieve speeds similar to [`flip.gif`](flip.gif), set `LATCH_TIME=120`.
 
 Fill in your WIFI information and server IP address in [`Network_Config.h`](ESP32/Network_Config.h):
 ```cpp
@@ -120,8 +129,10 @@ Clone this repository on a server of your choice (RPi, AWS, locally) and run [`s
 
 ## Contact
 
-Encountered a bug you'd like to report? Fill out a GitHub issue. Need help/support? Have an idea for a new feature? Make a GitHub Discussion.
+Encountered a bug you'd like to report? Fill out a GitHub issue. Need help/support? Have an idea for a new feature? Make a GitHub Discussion!
 
+[split-flap]: https://en.wikipedia.org/wiki/Split-flap_display
+[yamato-yagi-station]: https://en.wikipedia.org/wiki/Yamato-Yagi_Station
 [kintetsu-timetable]: https://eki.kintetsu.co.jp/english/T1
 [kintetsu-livetracking]: https://tid.kintetsu.co.jp/LocationWeb/
 [splitflap-blog]: https://web.archive.org/web/20230327031600/https://ohararp.com/split-flap-reverse-engineering-part-1/

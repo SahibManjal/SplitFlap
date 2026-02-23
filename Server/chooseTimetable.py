@@ -82,8 +82,8 @@ def getTimetable():
     Returns the timetable to be used at the current time.
     """
     if isWeekendTimetable():
-        with open("weekendTimetable.json", "r") as file:
+        with open("timetable/weekend.json", "r") as file:
             return json.load(file)
 
-    with open("weekdayTimetable.json", "r") as file:
+    with open("timetable/weekday.json", "r") as file:
         return json.load(file)
