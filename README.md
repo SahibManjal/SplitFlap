@@ -10,6 +10,8 @@ With a little wiring, a microcontroller, and a small server, convert your room i
   <a href="https://en.wikipedia.org/wiki/Yamato-Yagi_Station"> Yamato-Yagi station</a>'s split-flap displays flipping 
 </p>
 
+While other attempts have been able to manipulate Split Flap displays to your needs, there has not been an explicit example recreating how these Split Flap displays worked in real-life. By utilizing timetables, mimicking flip behavior from real-world examples, getting live delays for adaptability, and integrating the various types of Solari Split Flaps displays, we have been able to faithfully recreate real-life scenarios.
+
 ## Setup
 
 ### Prerequisites
