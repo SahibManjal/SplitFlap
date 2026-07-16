@@ -1,4 +1,6 @@
-[![License](https://img.shields.io/github/license/SahibManjal/SplitFlap?color=darkgreen&labelColor=grey&style=flat-circle)](https://github.com/SahibManjal/SplitFlap/blob/readme/LICENSE)
+[![License](https://img.shields.io/github/license/SahibManjal/SplitFlap?color=navy&labelColor=grey&style=flat)](https://github.com/SahibManjal/SplitFlap/blob/readme/LICENSE) 
+[![AI](https://img.shields.io/badge/AI%20Usage-100%25%20Natty-darkgreen?style=flat)](https://www.vatican.va/content/leo-xiv/en/encyclicals/documents/20260515-magnifica-humanitas.html)
+
 # SplitFlap
 
 SplitFlap enables the use of [split-flap displays][split-flap] as train signs following a preset schedule.
