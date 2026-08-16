@@ -1,16 +1,33 @@
-import requests
+from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 
 WEEKENDS = ["Saturday", "Sunday"]
 HOLIDAY_SCHEDULE_TYPE = ["National Holiday", "Bank holiday"]
 
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+)
+
 
 def createParser(url):
     """
-    Returns a BeautifulSoup parser with a header.
+    Returns a BeautifulSoup parser with a header. Uses Playwright and Chromium
+    to resolve Cloudlflare issues.
     """
-    response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
-    return BeautifulSoup(response.content, "html.parser")
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page(user_agent=USER_AGENT)
+        page.goto(url, wait_until="domcontentloaded", timeout=60000)
+
+        try:
+            page.wait_for_selector("#holidays-table", timeout=30000)
+        except Exception:
+            print("Warning: table never appeared, blocked by Cloudflare")
+
+        html = page.content()
+        browser.close()
+    return BeautifulSoup(html, "html.parser")
 
 
 def getHolidayScheduleDays(soup):

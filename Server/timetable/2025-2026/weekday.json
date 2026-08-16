@@ -1,0 +1,1332 @@
+[
+  {
+    "location": "Blank",
+    "hour": 5,
+    "minutes": 8,
+    "destinationFlap": 0,
+    "stopFlap": 0
+  },
+  {
+    "location": "L-Haibara",
+    "hour": 5,
+    "minutes": 38,
+    "destinationFlap": 31,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Toba",
+    "hour": 5,
+    "minutes": 51,
+    "destinationFlap": 20,
+    "stopFlap": 25,
+    "comment": "Actual end is Nakagawa"
+  },
+  {
+    "location": "L-Haibara",
+    "hour": 6,
+    "minutes": 3,
+    "destinationFlap": 31,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Toba",
+    "hour": 6,
+    "minutes": 11,
+    "destinationFlap": 20,
+    "stopFlap": 25,
+    "comment": "Actual end is Nakagawa"
+  },
+  {
+    "location": "L-Nabari",
+    "hour": 6,
+    "minutes": 24,
+    "destinationFlap": 30,
+    "stopFlap": 39
+  },
+  {
+    "location": "LE-Kashikojima",
+    "hour": 6,
+    "minutes": 37,
+    "destinationFlap": 5,
+    "stopFlap": 47
+  },
+  {
+    "location": "L-Haibara",
+    "hour": 6,
+    "minutes": 38,
+    "destinationFlap": 31,
+    "stopFlap": 39
+  },
+  {
+    "location": "Terminates Here",
+    "hour": 6,
+    "minutes": 49,
+    "destinationFlap": 38,
+    "stopFlap": 16,
+    "comment": "Added 1 minute to clear platform"
+  },
+  {
+    "location": "L-Haibara",
+    "hour": 6,
+    "minutes": 54,
+    "destinationFlap": 31,
+    "stopFlap": 39
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 7,
+    "minutes": 0,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "E-Isuzugawa",
+    "hour": 7,
+    "minutes": 4,
+    "destinationFlap": 21,
+    "stopFlap": 33
+  },
+  {
+    "location": "LE-Ujiyamada",
+    "hour": 7,
+    "minutes": 14,
+    "destinationFlap": 7,
+    "stopFlap": 53
+  },
+  {
+    "location": "L-Haibara",
+    "hour": 7,
+    "minutes": 15,
+    "destinationFlap": 31,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 7,
+    "minutes": 21,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 7,
+    "minutes": 29,
+    "destinationFlap": 1,
+    "stopFlap": 44
+  },
+  {
+    "location": "SE-Nabari",
+    "hour": 7,
+    "minutes": 31,
+    "destinationFlap": 27,
+    "stopFlap": 39
+  },
+  {
+    "location": "LE-Kashikojima",
+    "hour": 7,
+    "minutes": 39,
+    "destinationFlap": 5,
+    "stopFlap": 47
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 7,
+    "minutes": 40,
+    "destinationFlap": 48,
+    "stopFlap": 39
+  },
+  {
+    "location": "E-Isuzugawa",
+    "hour": 7,
+    "minutes": 47,
+    "destinationFlap": 21,
+    "stopFlap": 33
+  },
+  {
+    "location": "L-Haibara",
+    "hour": 7,
+    "minutes": 52,
+    "destinationFlap": 31,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 8,
+    "minutes": 1,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 8,
+    "minutes": 2,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 8,
+    "minutes": 7,
+    "destinationFlap": 48,
+    "stopFlap": 39
+  },
+  {
+    "location": "E-Toba",
+    "hour": 8,
+    "minutes": 13,
+    "destinationFlap": 20,
+    "stopFlap": 25,
+    "comment": "Actual end is Nakagawa"
+  },
+  {
+    "location": "LE-Ujiyamada",
+    "hour": 8,
+    "minutes": 20,
+    "destinationFlap": 7,
+    "stopFlap": 19
+  },
+  {
+    "location": "SE-Haibara",
+    "hour": 8,
+    "minutes": 21,
+    "destinationFlap": 28,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 8,
+    "minutes": 29,
+    "destinationFlap": 1,
+    "stopFlap": 44
+  },
+  {
+    "location": "E-Nabari",
+    "hour": 8,
+    "minutes": 30,
+    "destinationFlap": 25,
+    "stopFlap": 38
+  },
+  {
+    "location": "LE-Kashikojima",
+    "hour": 8,
+    "minutes": 41,
+    "destinationFlap": 5,
+    "stopFlap": 47
+  },
+  {
+    "location": "L-Haibara",
+    "hour": 8,
+    "minutes": 42,
+    "destinationFlap": 31,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "RE-Aoyamacho",
+    "hour": 8,
+    "minutes": 49,
+    "destinationFlap": 45,
+    "stopFlap": 27
+  },
+  {
+    "location": "L-Haibara",
+    "hour": 8,
+    "minutes": 57,
+    "destinationFlap": 31,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 9,
+    "minutes": 3,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "LE-Toba",
+    "hour": 9,
+    "minutes": 5,
+    "destinationFlap": 6,
+    "stopFlap": 10
+  },
+  {
+    "location": "E-Toba",
+    "hour": 9,
+    "minutes": 13,
+    "destinationFlap": 20,
+    "stopFlap": 25,
+    "comment": "Actual end is Nakagawa"
+  },
+  {
+    "location": "LE-Ujiyamada",
+    "hour": 9,
+    "minutes": 18,
+    "destinationFlap": 7,
+    "stopFlap": 14
+  },
+  {
+    "location": "L-Haibara",
+    "hour": 9,
+    "minutes": 21,
+    "destinationFlap": 31,
+    "stopFlap": 39
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 9,
+    "minutes": 29,
+    "destinationFlap": 1,
+    "stopFlap": 44
+  },
+  {
+    "location": "RE-Matsusaka",
+    "hour": 9,
+    "minutes": 32,
+    "destinationFlap": 44,
+    "stopFlap": 3
+  },
+  {
+    "location": "LE-Kashikojima",
+    "hour": 9,
+    "minutes": 41,
+    "destinationFlap": 5,
+    "stopFlap": 47
+  },
+  {
+    "location": "SE-Haibara",
+    "hour": 9,
+    "minutes": 42,
+    "destinationFlap": 28,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 9,
+    "minutes": 48,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "L-Haibara",
+    "hour": 9,
+    "minutes": 56,
+    "destinationFlap": 31,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 10,
+    "minutes": 2,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "LE-Kashikojima",
+    "hour": 10,
+    "minutes": 4,
+    "destinationFlap": 5,
+    "stopFlap": 49
+  },
+  {
+    "location": "E-Toba",
+    "hour": 10,
+    "minutes": 7,
+    "destinationFlap": 20,
+    "stopFlap": 25,
+    "comment": "Actual end is Nakagawa"
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 10,
+    "minutes": 21,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 10,
+    "minutes": 29,
+    "destinationFlap": 1,
+    "stopFlap": 44
+  },
+  {
+    "location": "E-Nabari",
+    "hour": 10,
+    "minutes": 30,
+    "destinationFlap": 25,
+    "stopFlap": 38
+  },
+  {
+    "location": "LE-Kashikojima",
+    "hour": 10,
+    "minutes": 41,
+    "destinationFlap": 5,
+    "stopFlap": 47
+  },
+  {
+    "location": "L-Haibara",
+    "hour": 10,
+    "minutes": 42,
+    "destinationFlap": 31,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 10,
+    "minutes": 48,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "Shimakaze-Kashikojima",
+    "hour": 10,
+    "minutes": 54,
+    "destinationFlap": 51,
+    "stopFlap": 20
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 10,
+    "minutes": 56,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 11,
+    "minutes": 2,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "E-Toba",
+    "hour": 11,
+    "minutes": 5,
+    "destinationFlap": 20,
+    "stopFlap": 25,
+    "comment": "Actual end is Nakagawa"
+  },
+  {
+    "location": "Shimakaze-Kashikojima",
+    "hour": 11,
+    "minutes": 11,
+    "destinationFlap": 51,
+    "stopFlap": 20
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 11,
+    "minutes": 12,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Nabari",
+    "hour": 11,
+    "minutes": 26,
+    "destinationFlap": 25,
+    "stopFlap": 38
+  },
+  {
+    "location": "L-Haibara",
+    "hour": 11,
+    "minutes": 32,
+    "destinationFlap": 31,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "LE-Kashikojima",
+    "hour": 11,
+    "minutes": 41,
+    "destinationFlap": 5,
+    "stopFlap": 47
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 12,
+    "minutes": 2,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 12,
+    "minutes": 3,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Toba",
+    "hour": 12,
+    "minutes": 8,
+    "destinationFlap": 20,
+    "stopFlap": 25,
+    "comment": "Actual end is Nakagawa"
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 12,
+    "minutes": 19,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Nabari",
+    "hour": 12,
+    "minutes": 31,
+    "destinationFlap": 25,
+    "stopFlap": 38
+  },
+  {
+    "location": "LE-Kashikojima",
+    "hour": 12,
+    "minutes": 41,
+    "destinationFlap": 5,
+    "stopFlap": 47
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 12,
+    "minutes": 42,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 12,
+    "minutes": 50,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 13,
+    "minutes": 2,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 13,
+    "minutes": 3,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Toba",
+    "hour": 13,
+    "minutes": 8,
+    "destinationFlap": 20,
+    "stopFlap": 25,
+    "comment": "Actual end is Nakagawa"
+  },
+  {
+    "location": "L-Haibara",
+    "hour": 13,
+    "minutes": 19,
+    "destinationFlap": 31,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Nabari",
+    "hour": 13,
+    "minutes": 31,
+    "destinationFlap": 25,
+    "stopFlap": 38
+  },
+  {
+    "location": "LE-Kashikojima",
+    "hour": 13,
+    "minutes": 41,
+    "destinationFlap": 5,
+    "stopFlap": 47
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 13,
+    "minutes": 42,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 13,
+    "minutes": 50,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 14,
+    "minutes": 2,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 14,
+    "minutes": 3,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Isuzugawa",
+    "hour": 14,
+    "minutes": 8,
+    "destinationFlap": 21,
+    "stopFlap": 33
+  },
+  {
+    "location": "L-Haibara",
+    "hour": 14,
+    "minutes": 19,
+    "destinationFlap": 31,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Nabari",
+    "hour": 14,
+    "minutes": 31,
+    "destinationFlap": 25,
+    "stopFlap": 38
+  },
+  {
+    "location": "LE-Kashikojima",
+    "hour": 14,
+    "minutes": 41,
+    "destinationFlap": 5,
+    "stopFlap": 47
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 14,
+    "minutes": 42,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 14,
+    "minutes": 50,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 15,
+    "minutes": 2,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 15,
+    "minutes": 3,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Isuzugawa",
+    "hour": 15,
+    "minutes": 8,
+    "destinationFlap": 21,
+    "stopFlap": 33
+  },
+  {
+    "location": "L-Haibara",
+    "hour": 15,
+    "minutes": 19,
+    "destinationFlap": 31,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "LE-Kashikojima",
+    "hour": 15,
+    "minutes": 41,
+    "destinationFlap": 5,
+    "stopFlap": 47
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 15,
+    "minutes": 42,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Toba",
+    "hour": 15,
+    "minutes": 50,
+    "destinationFlap": 20,
+    "stopFlap": 25,
+    "comment": "Actual end is Nakagawa"
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 16,
+    "minutes": 2,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 16,
+    "minutes": 3,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 16,
+    "minutes": 11,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 16,
+    "minutes": 22,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 16,
+    "minutes": 29,
+    "destinationFlap": 1,
+    "stopFlap": 44
+  },
+  {
+    "location": "E-Isuzugawa",
+    "hour": 16,
+    "minutes": 31,
+    "destinationFlap": 21,
+    "stopFlap": 33
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 16,
+    "minutes": 36,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "LE-Kashikojima",
+    "hour": 16,
+    "minutes": 42,
+    "destinationFlap": 5,
+    "stopFlap": 47
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 16,
+    "minutes": 49,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 16,
+    "minutes": 55,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 17,
+    "minutes": 2,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "E-Toba",
+    "hour": 17,
+    "minutes": 9,
+    "destinationFlap": 20,
+    "stopFlap": 25,
+    "comment": "Actual end is Nakagawa"
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 17,
+    "minutes": 12,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 17,
+    "minutes": 22,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 17,
+    "minutes": 29,
+    "destinationFlap": 1,
+    "stopFlap": 44
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 17,
+    "minutes": 31,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Ujiyamada",
+    "hour": 17,
+    "minutes": 36,
+    "destinationFlap": 22,
+    "stopFlap": 33
+  },
+  {
+    "location": "LE-Toba",
+    "hour": 17,
+    "minutes": 42,
+    "destinationFlap": 6,
+    "stopFlap": 45
+  },
+  {
+    "location": "SE-Haibara",
+    "hour": 17,
+    "minutes": 47,
+    "destinationFlap": 28,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 17,
+    "minutes": 52,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 18,
+    "minutes": 2,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "LE-Toba",
+    "hour": 18,
+    "minutes": 4,
+    "destinationFlap": 6,
+    "stopFlap": 10
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 18,
+    "minutes": 7,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "LE-Matsusaka",
+    "hour": 18,
+    "minutes": 14,
+    "destinationFlap": 8,
+    "stopFlap": 17
+  },
+  {
+    "location": "E-Toba",
+    "hour": 18,
+    "minutes": 15,
+    "destinationFlap": 20,
+    "stopFlap": 25,
+    "comment": "Actual end is Nakagawa"
+  },
+  {
+    "location": "SE-Haibara",
+    "hour": 18,
+    "minutes": 23,
+    "destinationFlap": 28,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 18,
+    "minutes": 29,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "SE-Haibara",
+    "hour": 18,
+    "minutes": 36,
+    "destinationFlap": 28,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "LE-Toba",
+    "hour": 18,
+    "minutes": 42,
+    "destinationFlap": 6,
+    "stopFlap": 53,
+    "comment": "Actual end is Isuzugawa"
+  },
+  {
+    "location": "RE-Nabari",
+    "hour": 18,
+    "minutes": 43,
+    "destinationFlap": 46,
+    "stopFlap": 28
+  },
+  {
+    "location": "SE-Haibara",
+    "hour": 18,
+    "minutes": 47,
+    "destinationFlap": 28,
+    "stopFlap": 39
+  },
+  {
+    "location": "RE-Aoyamacho",
+    "hour": 18,
+    "minutes": 55,
+    "destinationFlap": 45,
+    "stopFlap": 26
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 19,
+    "minutes": 2,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "SE-Nabari",
+    "hour": 19,
+    "minutes": 3,
+    "destinationFlap": 27,
+    "stopFlap": 39
+  },
+  {
+    "location": "RE-Aoyamacho",
+    "hour": 19,
+    "minutes": 10,
+    "destinationFlap": 45,
+    "stopFlap": 26
+  },
+  {
+    "location": "LE-Matsusaka",
+    "hour": 19,
+    "minutes": 14,
+    "destinationFlap": 8,
+    "stopFlap": 17
+  },
+  {
+    "location": "SE-Haibara",
+    "hour": 19,
+    "minutes": 19,
+    "destinationFlap": 28,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "RE-Matsusaka",
+    "hour": 19,
+    "minutes": 24,
+    "destinationFlap": 44,
+    "stopFlap": 3
+  },
+  {
+    "location": "SE-Haibara",
+    "hour": 19,
+    "minutes": 30,
+    "destinationFlap": 28,
+    "stopFlap": 39
+  },
+  {
+    "location": "LE-Ujiyamada",
+    "hour": 19,
+    "minutes": 42,
+    "destinationFlap": 7,
+    "stopFlap": 53
+  },
+  {
+    "location": "RE-Aoyamacho",
+    "hour": 19,
+    "minutes": 43,
+    "destinationFlap": 45,
+    "stopFlap": 26
+  },
+  {
+    "location": "SE-Haibara",
+    "hour": 19,
+    "minutes": 48,
+    "destinationFlap": 28,
+    "stopFlap": 39
+  },
+  {
+    "location": "RE-Aoyamacho",
+    "hour": 19,
+    "minutes": 55,
+    "destinationFlap": 45,
+    "stopFlap": 26
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 20,
+    "minutes": 2,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "SE-Nabari",
+    "hour": 20,
+    "minutes": 3,
+    "destinationFlap": 27,
+    "stopFlap": 39
+  },
+  {
+    "location": "RE-Toba",
+    "hour": 20,
+    "minutes": 10,
+    "destinationFlap": 11,
+    "stopFlap": 21
+  },
+  {
+    "location": "LE-Matsusaka",
+    "hour": 20,
+    "minutes": 14,
+    "destinationFlap": 8,
+    "stopFlap": 17
+  },
+  {
+    "location": "SE-Haibara",
+    "hour": 20,
+    "minutes": 19,
+    "destinationFlap": 28,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "RE-Aoyamacho",
+    "hour": 20,
+    "minutes": 24,
+    "destinationFlap": 45,
+    "stopFlap": 26
+  },
+  {
+    "location": "SE-Haibara",
+    "hour": 20,
+    "minutes": 30,
+    "destinationFlap": 28,
+    "stopFlap": 39
+  },
+  {
+    "location": "LE-Matsusaka",
+    "hour": 20,
+    "minutes": 42,
+    "destinationFlap": 8,
+    "stopFlap": 17
+  },
+  {
+    "location": "RE-Matsusaka",
+    "hour": 20,
+    "minutes": 43,
+    "destinationFlap": 44,
+    "stopFlap": 3
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 20,
+    "minutes": 49,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "SE-Haibara",
+    "hour": 20,
+    "minutes": 50,
+    "destinationFlap": 28,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 20,
+    "minutes": 56,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 21,
+    "minutes": 2,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "SE-Haibara",
+    "hour": 21,
+    "minutes": 7,
+    "destinationFlap": 28,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Ujiyamada",
+    "hour": 21,
+    "minutes": 11,
+    "destinationFlap": 22,
+    "stopFlap": 33
+  },
+  {
+    "location": "LE-Matsusaka",
+    "hour": 21,
+    "minutes": 22,
+    "destinationFlap": 8,
+    "stopFlap": 17
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 21,
+    "minutes": 23,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Nabari",
+    "hour": 21,
+    "minutes": 30,
+    "destinationFlap": 25,
+    "stopFlap": 38
+  },
+  {
+    "location": "LE-Matsusaka",
+    "hour": 21,
+    "minutes": 42,
+    "destinationFlap": 8,
+    "stopFlap": 17
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 21,
+    "minutes": 43,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 21,
+    "minutes": 49,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 21,
+    "minutes": 57,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "LE-Nagoya",
+    "hour": 22,
+    "minutes": 2,
+    "destinationFlap": 1,
+    "stopFlap": 2
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 22,
+    "minutes": 3,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 22,
+    "minutes": 12,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "SE-Haibara",
+    "hour": 22,
+    "minutes": 15,
+    "destinationFlap": 28,
+    "stopFlap": 39
+  },
+  {
+    "location": "LE-Matsusaka",
+    "hour": 22,
+    "minutes": 23,
+    "destinationFlap": 8,
+    "stopFlap": 17
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 22,
+    "minutes": 26,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 22,
+    "minutes": 30,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "LE-Nabari",
+    "hour": 22,
+    "minutes": 42,
+    "destinationFlap": 9,
+    "stopFlap": 18
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 22,
+    "minutes": 44,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 22,
+    "minutes": 45,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "LE-Nabari",
+    "hour": 23,
+    "minutes": 0,
+    "destinationFlap": 9,
+    "stopFlap": 18
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 23,
+    "minutes": 3,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 23,
+    "minutes": 4,
+    "destinationFlap": 48,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 23,
+    "minutes": 17,
+    "destinationFlap": 48,
+    "stopFlap": 39
+  },
+  {
+    "location": "Terminates Here",
+    "hour": 23,
+    "minutes": 26,
+    "destinationFlap": 38,
+    "stopFlap": 16,
+    "comment": "Added 1 minute to clear platform"
+  },
+  {
+    "location": "SE-Nabari",
+    "hour": 23,
+    "minutes": 33,
+    "destinationFlap": 27,
+    "stopFlap": 39
+  },
+  {
+    "location": "LE-Nabari",
+    "hour": 23,
+    "minutes": 42,
+    "destinationFlap": 9,
+    "stopFlap": 18
+  },
+  {
+    "location": "L-Haibara",
+    "hour": 23,
+    "minutes": 43,
+    "destinationFlap": 31,
+    "stopFlap": 39,
+    "comment": "Actual end is Yamato-Asakura"
+  },
+  {
+    "location": "E-Aoyamacho",
+    "hour": 23,
+    "minutes": 49,
+    "destinationFlap": 24,
+    "stopFlap": 36
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 23,
+    "minutes": 57,
+    "destinationFlap": 48,
+    "stopFlap": 39
+  },
+  {
+    "location": "Terminates Here",
+    "hour": 0,
+    "minutes": 8,
+    "destinationFlap": 38,
+    "stopFlap": 16,
+    "comment": "Added 1 minute to clear platform"
+  },
+  {
+    "location": "SSE-Haibara",
+    "hour": 0,
+    "minutes": 17,
+    "destinationFlap": 48,
+    "stopFlap": 39
+  },
+  {
+    "location": "Terminates Here",
+    "hour": 0,
+    "minutes": 29,
+    "destinationFlap": 38,
+    "stopFlap": 16,
+    "comment": "Added 1 minute to clear platform"
+  }
+]
