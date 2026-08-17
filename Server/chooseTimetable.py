@@ -13,7 +13,7 @@ def getJapanTime():
     """
     utc_time = datetime.datetime.now(datetime.timezone.utc)
     current_timezone = pytz.timezone("Asia/Tokyo")
-    return utc_time.astimezone(current_timezone) + datetime.timedelta(hours=12)
+    return utc_time.astimezone(current_timezone)
 
 
 def getFinalTimetableTimes():
