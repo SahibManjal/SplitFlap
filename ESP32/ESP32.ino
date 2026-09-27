@@ -59,18 +59,24 @@ void updateTime() {
 }
 
 void getTimetable() {
-  client.get("/");
-  int statusCode = client.responseStatusCode();
-  response = client.responseBody();
-
   // Allocate the JSON document
   JsonDocument doc;
+  DeserializationError error;
 
-  // Deserialize the JSON document and handle error
-  while (DeserializationError error = deserializeJson(doc, response)) {
-    Serial.print(F("deserializeJson() failed: "));
-    Serial.println(error.f_str());
-  }
+  do {
+    client.get("/");
+    int statusCode = client.responseStatusCode();
+    response = client.responseBody();
+    // Deserialize the JSON document
+    error = deserializeJson(doc, response);
+
+    // Print error and retry again
+    if (error) {
+      Serial.print(F("deserializeJson() failed: "));
+      Serial.println(error.f_str());
+      delay(1000);
+    }
+  } while (error);
 
   // Turn Json into TimetableEntry
   JsonArray array = doc.as<JsonArray>();
