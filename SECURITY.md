@@ -9,7 +9,7 @@
 
 Unlike a typical versioning scheme, releases here aren't strictly sequential upgrades, as each represents a
 distinct hardware/software configuration. v1.x is fully self contained on the ESP32, with no external backend.
-v2.x adds a Raspberry Pi backend for holiday-aware scheduling, delay tracking, and other features that need
+v2.x adds a Raspberry Pi backend for holiday scheduling, delay tracking, and other features that need
 more than the ESP32 can do on its own.
 
 Because of this, running v1.x isn't "outdated". It's a valid, simpler setup for anyone who doesn't want the

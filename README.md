@@ -12,7 +12,7 @@ With a little wiring, a microcontroller, and a small server, convert your room i
   <a href="https://en.wikipedia.org/wiki/Yamato-Yagi_Station"> Yamato-Yagi station</a>'s split-flap displays flipping 
 </p>
 
-While other attempts have been able to manipulate Split Flap displays to your needs, there has not been an explicit example recreating how these Split Flap displays worked in real-life. By utilizing timetables, mimicking flip behavior from real-world examples, getting live delays for adaptability, and integrating the various types of Solari Split Flaps displays, we have been able to faithfully recreate real-life scenarios.
+While other attempts have been able to manipulate split-flap displays to your needs, there has not been an explicit example recreating how these split-flap displays worked in real-life. By utilizing timetables, mimicking flip behavior from real-world examples, getting live delays for adaptability, and integrating the various types of Solari split-flaps displays, we have been able to faithfully recreate real-life scenarios.
 
 ## Setup
 
@@ -25,11 +25,11 @@ While other attempts have been able to manipulate Split Flap displays to your ne
 
 ### ESP32 Configuration
 
-Fill in the `flippers` array in [`Flipper_Config.cpp`](ESP32/Flipper_Config.cpp) (look in [`Flipper_Config.h`](ESP32/Flipper_Config.h) for type `Flipper`):
+Fill in the `flippers` array in [`Flipper_Config.h`](ESP32/Flipper_Config.h) according to type `Flipper`:
 ```cpp
 Flipper flippers[FLIPPER_AMOUNT] = {
-  {DESTINATION, <in1>, <in2>, <enable>, <home>, <flipState>, <flipAmount>, <flapPosition>},
-  {STOP_PATTERN, <in1>, <in2>, <enable>, <home>, <flipState>, <flipAmount>, <flapPosition>},
+  {DESTINATION, <in1>, <in2>, <enable>, <home>},
+  {STOP_PATTERN, <in1>, <in2>, <enable>, <home>},
 };
 ```
 Each entry corresponds to a split-flap display and includes its `FlipperType` and the GPIO pins on the ESP32 responsible for controlling it.
@@ -56,6 +56,8 @@ Set the `FLIPPER_AMOUNT` and `LATCH_TIME` macros in [`Flipper_Config.h`](ESP32/F
 #define FLIPPER_AMOUNT -1
 ```
 To achieve speeds similar to [`flip.gif`](flip.gif), set `LATCH_TIME=120`.
+
+**NOTE**: defaults for the `flipper` array, `FLIPPER_AMOUNT`, and `LATCH_TIME` are currently in place.
 
 Fill in your WIFI information and server IP address in [`Network_Config.h`](ESP32/Network_Config.h):
 ```cpp
@@ -102,7 +104,7 @@ In [`Server/timetable/`](Server/timetable/), create two timetables for weekdays 
 
 ### Install
 
-Clone this repository on a server of your choice (RPi, AWS, locally) and run [`start.sh`](Server/start.sh). Then upload the files in [`ESP32/`](ESP32) on to the ESP32.
+Clone this repository on a server of your choice (RPi, AWS, locally), install the necessary libraries in [`Server/requirements.txt`](Server/requirements.txt), and run [`Server/start.sh`](Server/start.sh). Then upload the files in [`ESP32/`](ESP32) on to the ESP32.
 
 ## Previous Versions
 
@@ -133,7 +135,11 @@ Clone this repository on a server of your choice (RPi, AWS, locally) and run [`s
 
 ## Contact
 
-Encountered a bug you'd like to report? Fill out a GitHub issue. Need help/support? Have an idea for a new feature? Make a GitHub Discussion!
+Encountered a bug you'd like to report? Open a [GitHub Issue](https://github.com/SahibManjal/SplitFlap/issues/new) and see [CONTRIBUTING.md](CONTRIBUTING.md) for what to include in a good bug report.
+
+Need help/support, have a question, or have an idea for a new feature? Start a [GitHub Discussion](https://github.com/SahibManjal/SplitFlap/discussions)!
+
+Found a security vulnerability? Please don't open a public issue, see [SECURITY.md](SECURITY.md) for how to report it privately.
 
 [split-flap]: https://en.wikipedia.org/wiki/Split-flap_display
 [yamato-yagi-station]: https://en.wikipedia.org/wiki/Yamato-Yagi_Station
