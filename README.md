@@ -108,7 +108,7 @@ Clone this repository on a server of your choice (RPi, AWS, locally) and run [`s
 
 **WARNING**: parts of the setup instructions no longer apply. You should still be able to read the code to fill in the appropriate details. 
 
-- Version [c2916b6](https://github.com/SahibManjal/SplitFlap/tree/c2916b6ef02799e14cf0fc13f984a5d2cce181c2) for no server
+- Version [v1.0.0](https://github.com/SahibManjal/SplitFlap/releases/tag/v1.0.0) or commit hash [c2916b6](https://github.com/SahibManjal/SplitFlap/tree/c2916b6ef02799e14cf0fc13f984a5d2cce181c2) for no server (ESP32 only, no backend/Pi required)
 
 ## Roadmap
 

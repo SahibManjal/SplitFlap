@@ -1,0 +1,65 @@
+name: "CodeQL Advanced"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '39 15 * * 6'
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: c-cpp
+            build-mode: manual
+          - language: python
+            build-mode: none
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      # --- Arduino toolchain, only needed for the C/C++ (ESP32 firmware) analysis ---
+      - name: Set up arduino-cli
+        if: matrix.language == 'c-cpp'
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Install ESP32 board core
+        if: matrix.language == 'c-cpp'
+        run: |
+          arduino-cli core update-index --additional-urls https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+          arduino-cli core install esp32:esp32 --additional-urls https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+
+      - name: Install sketch libraries
+        if: matrix.language == 'c-cpp'
+        run: |
+          arduino-cli lib install "ArduinoJson"
+          arduino-cli lib install "ArduinoHttpClient"
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+
+      - name: Build firmware (manual build for c-cpp)
+        if: matrix.language == 'c-cpp'
+        run: |
+          arduino-cli compile --fqbn esp32:esp32:esp32 ./ESP32
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{matrix.language}}"
