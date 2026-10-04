@@ -16,7 +16,6 @@ struct Flipper {
   FlipperType type;
   int in1;
   int in2;
-  int enable;
   int home;
 };
 
@@ -24,12 +23,18 @@ struct Flipper {
 // REQUIRED: must be >= 75 to function properly
 #define LATCH_TIME 120
 // the number of entries in the flippers array
-#define FLIPPER_AMOUNT 2
+#define FLIPPER_AMOUNT 4
+// the gpio pin connected to both hall sensors. When set to HIGH it senses when
+// the flipper reaches home, when set to LOW it senses if a flip actually 
+// occured (i.e. there was some mechanical failire).
+#define HOME_OR_ERROR_PIN 2
 
 // Pin data
 Flipper flippers[FLIPPER_AMOUNT] = {
-    {DESTINATION, 4, 15, 2, 33},
-    {STOP_PATTERN, 23, 22, 21, 32},
+    {DESTINATION, 15, 4, 25},
+    {STOP_PATTERN, 22, 23, 34},
+    {TENS_MINUTE, 16, 17, 33},
+    {ONES_MINUTE, 5, 18, 32},
 };
 
 #endif

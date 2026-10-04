@@ -1,5 +1,8 @@
 [![License](https://img.shields.io/github/license/SahibManjal/SplitFlap?color=navy&labelColor=grey&style=flat)](https://github.com/SahibManjal/SplitFlap/blob/readme/LICENSE) 
 [![AI](https://img.shields.io/badge/AI%20Usage-100%25%20Natty-darkgreen?style=flat)](https://www.vatican.va/content/leo-xiv/en/encyclicals/documents/20260515-magnifica-humanitas.html)
+![CodeQL](https://github.com/SahibManjal/SplitFlap/actions/workflows/codeql.yml/badge.svg)
+![Release](https://img.shields.io/github/v/release/SahibManjal/SplitFlap?color=navy&labelColor=grey&style=flat)
+![Repo Size](https://img.shields.io/github/repo-size/SahibManjal/SplitFlap?color=navy&labelColor=grey&style=flat)
 
 # SplitFlap
 

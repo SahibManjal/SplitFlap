@@ -96,10 +96,11 @@ void getTimetable() {
 }
 
 void setup() {
+  pinMode(HOME_OR_ERROR_PIN, OUTPUT);
+  digitalWrite(HOME_OR_ERROR_PIN, HIGH);
   for (int i = 0; i < FLIPPER_AMOUNT; i++) {
     pinMode(flippers[i].in1, OUTPUT);
     pinMode(flippers[i].in2, OUTPUT);
-    pinMode(flippers[i].enable, OUTPUT);
     pinMode(flippers[i].home, INPUT);
 
     flippersWithState[i].flipper = flippers[i];
@@ -137,6 +138,9 @@ void loop() {
   // All Flippers go Home when we start
   if (initialHome) {
     initialHome = !goHomeTick();
+    if (!initialHome) {
+      digitalWrite(HOME_OR_ERROR_PIN, LOW);
+    }
   }
 
   // Move All Flippers to new Positions
@@ -173,7 +177,7 @@ void loop() {
     }
 
     while (goNewPositionTick())
-      ;
+      ; // Empty loop as work done in goNewPositionTick
     displayedTrain = currentTrain;
   }
   // Updates to New Timetable Position
@@ -219,13 +223,15 @@ void loop() {
 bool goNewPositionTick() {
   // Moves all Flipers towards the New Position
   int noFlips = FLIPPER_AMOUNT;
-  enableAllFlippers();
   for (int i = 0; i < FLIPPER_AMOUNT; i++) {
     if (flippersWithState[i].flipAmount) {
+      int orginalError = digitalRead(flippersWithState[i].flipper.home);
       singleFlip(i);
-      flippersWithState[i].flipAmount--;
-      flippersWithState[i].flapPosition =
-          mod(flippersWithState[i].flapPosition + 1, 60);
+      if (orginalError == digitalRead(flippersWithState[i].flipper.home)) {
+        flippersWithState[i].flipAmount--;
+        flippersWithState[i].flapPosition =
+            mod(flippersWithState[i].flapPosition + 1, 60);
+      }
     } else {
       noFlips--;
     }
@@ -237,7 +243,6 @@ bool goNewPositionTick() {
 bool goHomeTick() {
   // Moves all Flipers towards the Home Position
   int allHome = 0;
-  enableAllFlippers();
   for (int i = 0; i < FLIPPER_AMOUNT; i++) {
     if (digitalRead(flippersWithState[i].flipper.home)) {
       singleFlip(i);
@@ -249,18 +254,12 @@ bool goHomeTick() {
   return allHome == FLIPPER_AMOUNT;
 }
 
-void enableAllFlippers() {
-  // Sets the enable pin HIGH for all flippers
-  for (int i = 0; i < FLIPPER_AMOUNT; i++) {
-    digitalWrite(flippersWithState[i].flipper.enable, HIGH);
-  }
-}
-
 void disableAllFlippers() {
-  // Delays for `latchTime` ms and then sets the enable pin LOW for all flippers
+  // Delays for `latchTime` ms and then sets the in pins to LOW for all flippers
   delay(LATCH_TIME);
   for (int i = 0; i < FLIPPER_AMOUNT; i++) {
-    digitalWrite(flippersWithState[i].flipper.enable, LOW);
+    digitalWrite(flippersWithState[i].flipper.in1, LOW);
+    digitalWrite(flippersWithState[i].flipper.in2, LOW);
   }
 }
 
